@@ -10,7 +10,7 @@ import random
 import uuid
 import logging
 
-from locust import HttpUser, task, between
+from locust import FastHttpUser, task, between
 from locust_plugins.users.playwright import PlaywrightUser, pw, PageWithRetry, event
 
 from opentelemetry import context, baggage, trace
@@ -103,7 +103,7 @@ products = [
 people_file = open('people.json')
 people = json.load(people_file)
 
-class WebsiteUser(HttpUser):
+class WebsiteUser(FastHttpUser):
     wait_time = between(1, 10)
 
     @task(1)
