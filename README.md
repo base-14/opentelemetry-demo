@@ -58,22 +58,23 @@ keeping it up to date for you.
 
 |                           |                |                                  |
 |---------------------------|----------------|----------------------------------|
-| [AlibabaCloud LogService] | [Elastic]      | [OpenSearch]                     |
-| [AppDynamics]             | [Google Cloud] | [Sentry]                         |
-| [Aspecto]                 | [Grafana Labs] | [ServiceNow Cloud Observability] |
-| [Axiom]                   | [Guance]       | [Splunk]                         |
-| [Axoflow]                 | [Honeycomb.io] | [Sumo Logic]                     |
-| [Azure Data Explorer]     | [Instana]      | [TelemetryHub]                   |
-| [Coralogix]               | [Kloudfuse]    | [Teletrace]                      |
-| [Dash0]                   | [Liatrio]      | [Tracetest]                      |
-| [Datadog]                 | [Logz.io]      | [Uptrace]                        |
-| [Dynatrace]               | [New Relic]    |                                  |
+| [AlibabaCloud LogService] | [Google Cloud] |  [Oracle]                        |
+| [AppDynamics]             | [Grafana Labs] |  [Sentry]                        |
+| [Aspecto]                 | [Guance]       |  [ServiceNow Cloud Observability]|
+| [Axiom]                   | [Honeycomb.io] |  [SigNoz]                        |
+| [Axoflow]                 | [Instana]      |  [Splunk]                        |
+| [Azure Data Explorer]     | [Kloudfuse]    |  [Sumo Logic]                    |
+| [Coralogix]               | [Last9]        |  [TelemetryHub]                  |
+| [Dash0]                   | [Liatrio]      |  [Teletrace]                     |
+| [Datadog]                 | [Logz.io]      |  [Tracetest]                     |
+| [Dynatrace]               | [New Relic]    |  [Uptrace]                       |
+| [Elastic]                 | [OpenSearch]   |                                  |
 
 ## Contributing
 
 To get involved with the project see our [CONTRIBUTING](CONTRIBUTING.md)
 documentation. Our [SIG Calls](CONTRIBUTING.md#join-a-sig-call) are every other
-Monday at 8:30 AM PST and anyone is welcome.
+Wednesday at 8:30 AM PST and anyone is welcome.
 
 ## Project leadership
 
@@ -109,7 +110,7 @@ Emeritus:
 <!-- Links for Demos featuring the Astronomy Shop section -->
 
 [AlibabaCloud LogService]: https://github.com/aliyun-sls/opentelemetry-demo
-[AppDynamics]: https://www.appdynamics.com/blog/cloud/how-to-observe-opentelemetry-demo-app-in-appdynamics-cloud/
+[AppDynamics]: https://community.splunk.com/t5/AppDynamics-Knowledge-Base/How-to-observe-Kubernetes-deployment-of-OpenTelemetry-demo-app/ta-p/741454
 [Aspecto]: https://github.com/aspecto-io/opentelemetry-demo
 [Axiom]: https://play.axiom.co/axiom-play-qf1k/dashboards/otel.traces.otel-demo-traces
 [Axoflow]: https://axoflow.com/opentelemetry-support-in-more-detail-in-axosyslog-and-syslog-ng/
@@ -125,12 +126,15 @@ Emeritus:
 [Honeycomb.io]: https://github.com/honeycombio/opentelemetry-demo
 [Instana]: https://github.com/instana/opentelemetry-demo
 [Kloudfuse]: https://github.com/kloudfuse/opentelemetry-demo
+[Last9]: https://last9.io/docs/integrations-opentelemetry-demo/
 [Liatrio]: https://github.com/liatrio/opentelemetry-demo
 [Logz.io]: https://logz.io/learn/how-to-run-opentelemetry-demo-with-logz-io/
 [New Relic]: https://github.com/newrelic/opentelemetry-demo
 [OpenSearch]: https://github.com/opensearch-project/opentelemetry-demo
+[Oracle]: https://github.com/oracle-quickstart/oci-o11y-solutions/blob/main/knowledge-content/opentelemetry-demo
 [Sentry]: https://github.com/getsentry/opentelemetry-demo
 [ServiceNow Cloud Observability]: https://docs.lightstep.com/otel/quick-start-operator#send-data-from-the-opentelemetry-demo
+[SigNoz]: https://signoz.io/blog/opentelemetry-demo/
 [Splunk]: https://github.com/signalfx/opentelemetry-demo
 [Sumo Logic]: https://www.sumologic.com/blog/common-opentelemetry-demo-application/
 [TelemetryHub]: https://github.com/TelemetryHub/opentelemetry-demo/tree/telemetryhub-backend
