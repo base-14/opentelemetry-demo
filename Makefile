@@ -574,6 +574,23 @@ ci-build-no-dotnet: ## Run build without .NET services
 	@echo "$(BLUE)Running build (excluding .NET)...$(NC)"
 	@$(MAKE) build-java build-go build-nodejs build-python build-php build-ruby build-rust build-cpp || (echo "$(RED)❌ Build failed$(NC)" && exit 1)
 
+##@ Linting Tools
+install-tools: ## Install development tools
+	@echo "$(BLUE)Installing development tools...$(NC)"
+	@go install github.com/client9/misspell/cmd/misspell@latest
+
+install-yamllint: ## Install yamllint
+	@echo "$(BLUE)Installing yamllint...$(NC)"
+	@pip3 install yamllint
+
+markdownlint: ## Run markdown linting
+	@echo "$(BLUE)Running markdown linting...$(NC)"
+	@if command -v markdownlint >/dev/null 2>&1; then \
+		markdownlint *.md; \
+	else \
+		echo "$(YELLOW)markdownlint not installed, skipping$(NC)"; \
+	fi
+
 ##@ Utilities
 clean: ## Clean all build artifacts
 	@echo "$(YELLOW)Cleaning build artifacts...$(NC)"
