@@ -628,6 +628,7 @@ clean: ## Clean all build artifacts and generated protobuf files
 	rm -rf ./src/{checkout,product-catalog}/genproto/oteldemo/
 	rm -rf ./src/recommendation/{demo_pb2,demo_pb2_grpc}.py
 	rm -rf ./src/frontend/protos/demo.ts
+	rm -rf ./src/currency/build/generated/proto/
 	@for service in $(DOTNET_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			cd $$service && dotnet clean && cd - > /dev/null; \
