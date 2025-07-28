@@ -1,0 +1,40 @@
+{{- if .Values.postgresql.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.postgresql.name }}-init
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "otel-demo.componentLabels" (dict "root" . "component" "postgresql") | nindent 4 }}
+data:
+  init.sql: |
+    CREATE USER {{ .Values.postgresql.auth.otherUser }} WITH PASSWORD '{{ .Values.postgresql.auth.otherPassword }}';
+    GRANT ALL PRIVILEGES ON DATABASE {{ .Values.postgresql.auth.database }} TO {{ .Values.postgresql.auth.otherUser }};
+    
+    \c {{ .Values.postgresql.auth.database }};
+    
+    CREATE TABLE IF NOT EXISTS accounts (
+        id SERIAL PRIMARY KEY,
+        user_id VARCHAR(100) NOT NULL,
+        balance DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+        currency VARCHAR(3) NOT NULL DEFAULT 'USD',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    
+    CREATE TABLE IF NOT EXISTS transactions (
+        id SERIAL PRIMARY KEY,
+        account_id INTEGER REFERENCES accounts(id),
+        transaction_type VARCHAR(50) NOT NULL,
+        amount DECIMAL(10, 2) NOT NULL,
+        description TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    
+    CREATE INDEX idx_accounts_user_id ON accounts(user_id);
+    CREATE INDEX idx_transactions_account_id ON transactions(account_id);
+    CREATE INDEX idx_transactions_created_at ON transactions(created_at);
+    
+    GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO {{ .Values.postgresql.auth.otherUser }};
+    GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO {{ .Values.postgresql.auth.otherUser }};
+{{- end }}

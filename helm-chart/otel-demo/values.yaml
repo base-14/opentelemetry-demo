@@ -1,0 +1,593 @@
+# Global settings
+global:
+  imageRegistry: ghcr.io
+  imagePullSecrets: []
+  storageClass: ""
+  
+# Demo version configuration  
+demo:
+  version: 2.0.2
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest
+    pullPolicy: IfNotPresent
+
+# Scout Integration
+scout:
+  enabled: false
+  endpoint: "" # Your Scout endpoint (e.g., https://otel.play.b14.dev/YOUR_PROJECT_ID/otlp)
+  appName: "otel-demo" # Application name for Scout
+  apiKey: "" # Your Scout API key
+  tokenUrl: "https://id.b14.dev/realms/playground/protocol/openid-connect/token"
+  audience: "b14collector"
+  environment: "production"
+
+# OpenTelemetry Collector configuration
+otelCollector:
+  enabled: true
+  name: otel-collector
+  image:
+    repository: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib
+    tag: 0.129.1
+  ports:
+    grpc: 4317
+    http: 4318
+  resources:
+    limits:
+      memory: 200Mi
+    requests:
+      memory: 100Mi
+      cpu: 100m
+  # Configuration will be dynamically generated based on scout.enabled
+  config: {}
+
+# Core Demo Services
+accounting:
+  enabled: true
+  name: accounting
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-accounting
+  resources:
+    limits:
+      memory: 120Mi
+    requests:
+      memory: 60Mi
+      cpu: 50m
+  env:
+    - name: KAFKA_ADDR
+      value: "kafka:9092"
+    - name: OTEL_EXPORTER_OTLP_ENDPOINT
+      value: "http://otel-collector:4318"
+    - name: OTEL_SERVICE_NAME
+      value: accounting
+    - name: DB_CONNECTION_STRING
+      value: "Host=postgresql;Username=otelu;Password=otel;Database=otel"
+
+ad:
+  enabled: true
+  name: ad
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-ad
+  port: 9555
+  resources:
+    limits:
+      memory: 300Mi
+    requests:
+      memory: 150Mi
+      cpu: 100m
+  env:
+    - name: AD_PORT
+      value: "9555"
+    - name: FLAGD_HOST
+      value: flagd
+    - name: FLAGD_PORT
+      value: "8013"
+    - name: OTEL_EXPORTER_OTLP_ENDPOINT
+      value: "http://otel-collector:4318"
+    - name: OTEL_SERVICE_NAME
+      value: ad
+
+cart:
+  enabled: true
+  name: cart
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-cart
+  port: 7070
+  resources:
+    limits:
+      memory: 160Mi
+    requests:
+      memory: 80Mi
+      cpu: 50m
+  env:
+    - name: CART_PORT
+      value: "7070"
+    - name: VALKEY_ADDR
+      value: "valkey-cart:6379"
+    - name: OTEL_EXPORTER_OTLP_ENDPOINT
+      value: "http://otel-collector:4317"
+    - name: OTEL_SERVICE_NAME
+      value: cart
+    - name: ASPNETCORE_URLS
+      value: "http://*:7070"
+
+checkout:
+  enabled: true
+  name: checkout
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-checkout
+  port: 5050
+  resources:
+    limits:
+      memory: 20Mi
+    requests:
+      memory: 10Mi
+      cpu: 50m
+  env:
+    - name: CHECKOUT_PORT
+      value: "5050"
+    - name: CART_ADDR
+      value: "cart:7070"
+    - name: CURRENCY_ADDR
+      value: "currency:7001"
+    - name: EMAIL_ADDR
+      value: "http://email:6060"
+    - name: PAYMENT_ADDR
+      value: "payment:50051"
+    - name: PRODUCT_CATALOG_ADDR
+      value: "product-catalog:3550"
+    - name: SHIPPING_ADDR
+      value: "http://shipping:50050"
+    - name: KAFKA_ADDR
+      value: "kafka:9092"
+    - name: OTEL_EXPORTER_OTLP_ENDPOINT
+      value: "http://otel-collector:4317"
+    - name: OTEL_SERVICE_NAME
+      value: checkout
+
+currency:
+  enabled: true
+  name: currency
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-currency
+  port: 7001
+  resources:
+    limits:
+      memory: 20Mi
+    requests:
+      memory: 10Mi
+      cpu: 50m
+  env:
+    - name: CURRENCY_PORT
+      value: "7001"
+    - name: OTEL_EXPORTER_OTLP_ENDPOINT
+      value: "http://otel-collector:4317"
+    - name: OTEL_RESOURCE_ATTRIBUTES
+      value: "service.name=currency,service.namespace=opentelemetry-demo"
+
+email:
+  enabled: true
+  name: email
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-email
+  port: 6060
+  resources:
+    limits:
+      memory: 100Mi
+    requests:
+      memory: 50Mi
+      cpu: 50m
+  env:
+    - name: EMAIL_PORT
+      value: "6060"
+    - name: APP_ENV
+      value: production
+    - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+      value: "http://otel-collector:4318/v1/traces"
+    - name: OTEL_SERVICE_NAME
+      value: email
+
+fraudDetection:
+  enabled: true
+  name: fraud-detection
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-fraud-detection
+  resources:
+    limits:
+      memory: 300Mi
+    requests:
+      memory: 150Mi
+      cpu: 100m
+  env:
+    - name: KAFKA_ADDR
+      value: "kafka:9092"
+    - name: FLAGD_HOST
+      value: flagd
+    - name: FLAGD_PORT
+      value: "8013"
+    - name: OTEL_EXPORTER_OTLP_ENDPOINT
+      value: "http://otel-collector:4318"
+    - name: OTEL_SERVICE_NAME
+      value: fraud-detection
+
+frontend:
+  enabled: true
+  name: frontend
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-frontend
+  port: 8080
+  resources:
+    limits:
+      memory: 250Mi
+    requests:
+      memory: 125Mi
+      cpu: 100m
+  env:
+    - name: PORT
+      value: "8080"
+    - name: FRONTEND_ADDR
+      value: "frontend:8080"
+    - name: AD_ADDR
+      value: "ad:9555"
+    - name: CART_ADDR
+      value: "cart:7070"
+    - name: CHECKOUT_ADDR
+      value: "checkout:5050"
+    - name: CURRENCY_ADDR
+      value: "currency:7001"
+    - name: PRODUCT_CATALOG_ADDR
+      value: "product-catalog:3550"
+    - name: RECOMMENDATION_ADDR
+      value: "recommendation:9001"
+    - name: SHIPPING_ADDR
+      value: "http://shipping:50050"
+    - name: OTEL_EXPORTER_OTLP_ENDPOINT
+      value: "http://otel-collector:4317"
+    - name: OTEL_SERVICE_NAME
+      value: frontend
+    - name: WEB_OTEL_SERVICE_NAME
+      value: frontend-web
+    - name: FLAGD_HOST
+      value: flagd
+    - name: FLAGD_PORT
+      value: "8013"
+
+frontendProxy:
+  enabled: true
+  name: frontend-proxy
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-frontend-proxy
+  port: 8080
+  nodePort: 30080
+  type: NodePort
+  resources:
+    limits:
+      memory: 65Mi
+    requests:
+      memory: 32Mi
+      cpu: 50m
+
+imageProvider:
+  enabled: true
+  name: image-provider
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-image-provider
+  port: 8081
+  resources:
+    limits:
+      memory: 120Mi
+    requests:
+      memory: 60Mi
+      cpu: 50m
+
+loadGenerator:
+  enabled: true
+  name: load-generator
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-load-generator
+  port: 8089
+  resources:
+    limits:
+      memory: 1500Mi
+    requests:
+      memory: 750Mi
+      cpu: 200m
+  env:
+    - name: LOCUST_WEB_PORT
+      value: "8089"
+    - name: LOCUST_USERS
+      value: "5"
+    - name: LOCUST_HOST
+      value: "http://frontend-proxy:8080"
+    - name: LOCUST_HEADLESS
+      value: "false"
+    - name: LOCUST_AUTOSTART
+      value: "true"
+    - name: LOCUST_BROWSER_TRAFFIC_ENABLED
+      value: "true"
+
+payment:
+  enabled: true
+  name: payment
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-payment
+  port: 50051
+  resources:
+    limits:
+      memory: 120Mi
+    requests:
+      memory: 60Mi
+      cpu: 50m
+
+productCatalog:
+  enabled: true
+  name: product-catalog
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-product-catalog
+  port: 3550
+  resources:
+    limits:
+      memory: 20Mi
+    requests:
+      memory: 10Mi
+      cpu: 50m
+  env:
+    - name: PRODUCT_CATALOG_PORT
+      value: "3550"
+    - name: PRODUCT_CATALOG_RELOAD_INTERVAL
+      value: "10"
+
+quote:
+  enabled: true
+  name: quote
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-quote
+  port: 8090
+  resources:
+    limits:
+      memory: 40Mi
+    requests:
+      memory: 20Mi
+      cpu: 50m
+
+recommendation:
+  enabled: true
+  name: recommendation
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-recommendation
+  port: 9001
+  resources:
+    limits:
+      memory: 500Mi
+    requests:
+      memory: 250Mi
+      cpu: 100m
+  env:
+    - name: RECOMMENDATION_PORT
+      value: "9001"
+    - name: PRODUCT_CATALOG_ADDR
+      value: "product-catalog:3550"
+    - name: FLAGD_HOST
+      value: flagd
+    - name: FLAGD_PORT
+      value: "8013"
+
+shipping:
+  enabled: true
+  name: shipping
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-shipping
+  port: 50050
+  resources:
+    limits:
+      memory: 20Mi
+    requests:
+      memory: 10Mi
+      cpu: 50m
+  env:
+    - name: SHIPPING_PORT
+      value: "50050"
+    - name: QUOTE_ADDR
+      value: "http://quote:8090"
+
+# Dependent Services
+flagd:
+  enabled: true
+  name: flagd
+  image:
+    repository: ghcr.io/open-feature/flagd
+    tag: v0.12.8
+  ports:
+    grpc: 8013
+    http: 8016
+  resources:
+    limits:
+      memory: 75Mi
+    requests:
+      memory: 37Mi
+      cpu: 50m
+  config: |
+    {
+      "flags": {
+        "productCatalogFailure": {
+          "state": "ENABLED",
+          "variants": {
+            "on": true,
+            "off": false
+          },
+          "defaultVariant": "off"
+        }
+      }
+    }
+
+flagdUI:
+  enabled: true
+  name: flagd-ui
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-flagd-ui
+  port: 4000
+  resources:
+    limits:
+      memory: 100Mi
+    requests:
+      memory: 50Mi
+      cpu: 50m
+
+kafka:
+  enabled: true
+  name: kafka
+  image:
+    repository: ghcr.io/open-telemetry/demo
+    tag: latest-kafka
+  port: 9092
+  resources:
+    limits:
+      memory: 620Mi
+    requests:
+      memory: 310Mi
+      cpu: 200m
+  heapOpts: "-Xmx400m -Xms400m"
+
+postgresql:
+  enabled: true
+  name: postgresql
+  image:
+    repository: postgres
+    tag: 17.5
+  port: 5432
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      memory: 128Mi
+      cpu: 100m
+  auth:
+    username: root
+    password: otel
+    database: otel
+    otherUser: otelu
+    otherPassword: otelp
+
+valkey:
+  enabled: true
+  name: valkey-cart
+  image:
+    repository: valkey/valkey
+    tag: 8.1-alpine
+  port: 6379
+  resources:
+    limits:
+      memory: 20Mi
+    requests:
+      memory: 10Mi
+      cpu: 50m
+
+# Telemetry Components
+# Note: Set these to false when using Scout integration
+jaeger:
+  enabled: true
+  name: jaeger
+  image:
+    repository: jaegertracing/all-in-one
+    tag: 1.70.0
+  ports:
+    ui: 16686
+    collector: 4317
+  resources:
+    limits:
+      memory: 1200Mi
+    requests:
+      memory: 600Mi
+      cpu: 200m
+
+grafana:
+  enabled: true
+  name: grafana
+  image:
+    repository: grafana/grafana
+    tag: 12.0.2
+  port: 3000
+  resources:
+    limits:
+      memory: 120Mi
+    requests:
+      memory: 60Mi
+      cpu: 100m
+  adminPassword: admin
+
+prometheus:
+  enabled: true
+  name: prometheus
+  image:
+    repository: quay.io/prometheus/prometheus
+    tag: v3.4.2
+  port: 9090
+  resources:
+    limits:
+      memory: 300Mi
+    requests:
+      memory: 150Mi
+      cpu: 100m
+  retention: 1h
+
+opensearch:
+  enabled: true
+  name: opensearch
+  image:
+    repository: opensearchproject/opensearch
+    tag: 3.1.0
+  port: 9200
+  resources:
+    limits:
+      memory: 1100Mi
+    requests:
+      memory: 550Mi
+      cpu: 200m
+  javaOpts: "-Xms300m -Xmx300m"
+
+# Ingress configuration
+ingress:
+  enabled: false
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: otel-demo.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# Service Mesh configuration
+serviceMesh:
+  enabled: false
+  provider: istio  # Options: istio, linkerd, consul
+
+# Common labels to apply to all resources
+commonLabels:
+  app.kubernetes.io/part-of: opentelemetry-demo
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}

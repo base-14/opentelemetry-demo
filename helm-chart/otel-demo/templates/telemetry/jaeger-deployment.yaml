@@ -1,0 +1,54 @@
+{{- if .Values.jaeger.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.jaeger.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "otel-demo.componentLabels" (dict "root" . "component" "jaeger") | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "otel-demo.componentSelectorLabels" (dict "root" . "component" "jaeger") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "otel-demo.componentLabels" (dict "root" . "component" "jaeger") | nindent 8 }}
+    spec:
+      {{- include "otel-demo.imagePullSecrets" . | nindent 6 }}
+      containers:
+      - name: jaeger
+        image: "{{ .Values.jaeger.image.repository }}:{{ .Values.jaeger.image.tag }}"
+        imagePullPolicy: {{ .Values.demo.image.pullPolicy }}
+        args:
+        - "--memory.max-traces=25000"
+        - "--query.base-path=/jaeger/ui"
+        - "--prometheus.server-url=http://{{ .Values.prometheus.name }}:{{ .Values.prometheus.port }}"
+        - "--prometheus.query.normalize-calls=true"
+        - "--prometheus.query.normalize-duration=true"
+        ports:
+        - containerPort: {{ .Values.jaeger.ports.ui }}
+          name: ui
+        - containerPort: {{ .Values.jaeger.ports.collector }}
+          name: otlp-grpc
+        env:
+        - name: METRICS_STORAGE_TYPE
+          value: prometheus
+        - name: COLLECTOR_OTLP_ENABLED
+          value: "true"
+        resources:
+          {{- toYaml .Values.jaeger.resources | nindent 10 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

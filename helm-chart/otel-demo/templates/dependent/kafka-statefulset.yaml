@@ -1,0 +1,100 @@
+{{- if .Values.kafka.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.kafka.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "otel-demo.componentLabels" (dict "root" . "component" "kafka") | nindent 4 }}
+spec:
+  serviceName: {{ .Values.kafka.name }}
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "otel-demo.componentSelectorLabels" (dict "root" . "component" "kafka") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "otel-demo.componentLabels" (dict "root" . "component" "kafka") | nindent 8 }}
+    spec:
+      {{- include "otel-demo.imagePullSecrets" . | nindent 6 }}
+      containers:
+      - name: kafka
+        image: "{{ .Values.kafka.image.repository }}:{{ .Values.kafka.image.tag }}"
+        imagePullPolicy: {{ .Values.demo.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.kafka.port }}
+          name: kafka
+        - containerPort: 9093
+          name: controller
+        env:
+        - name: KAFKA_NODE_ID
+          value: "1"
+        - name: KAFKA_PROCESS_ROLES
+          value: "broker,controller"
+        - name: KAFKA_LISTENERS
+          value: "PLAINTEXT://0.0.0.0:{{ .Values.kafka.port }},CONTROLLER://0.0.0.0:9093"
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: "PLAINTEXT://{{ .Values.kafka.name }}:{{ .Values.kafka.port }}"
+        - name: KAFKA_CONTROLLER_LISTENER_NAMES
+          value: "CONTROLLER"
+        - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+          value: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
+        - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+          value: "1@{{ .Values.kafka.name }}:9093"
+        - name: KAFKA_INTER_BROKER_LISTENER_NAME
+          value: "PLAINTEXT"
+        - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+          value: "1"
+        - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+          value: "1"
+        - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+          value: "1"
+        - name: KAFKA_LOG_DIRS
+          value: "/var/lib/kafka/data"
+        - name: KAFKA_HEAP_OPTS
+          value: {{ .Values.kafka.heapOpts }}
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://{{ .Values.otelCollector.name }}:{{ .Values.otelCollector.ports.http }}"
+        - name: OTEL_SERVICE_NAME
+          value: kafka
+        {{- include "otel-demo.otelEnv" . | nindent 8 }}
+        livenessProbe:
+          tcpSocket:
+            port: kafka
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: kafka
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/kafka/data
+        resources:
+          {{- toYaml .Values.kafka.resources | nindent 10 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      {{- if .Values.global.storageClass }}
+      storageClassName: {{ .Values.global.storageClass }}
+      {{- end }}
+      resources:
+        requests:
+          storage: 1Gi
+{{- end }}
