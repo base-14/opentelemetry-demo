@@ -1,7 +1,7 @@
 # OpenTelemetry Demo - Base14 Fork
 # Makefile for development, testing, and CI simulation
 
-.PHONY: help install build test lint clean ci docker helm
+.PHONY: help install build test lint clean ci docker helm docker-generate-protobuf
 .DEFAULT_GOAL := help
 
 # Colors for output
@@ -606,6 +606,10 @@ misspell: ## Check for misspellings
 	else \
 		echo "$(YELLOW)misspell not installed, skipping$(NC)"; \
 	fi
+
+docker-generate-protobuf: ## Generate protobuf files using Docker
+	@echo "$(BLUE)Generating protobuf files...$(NC)"
+	@./docker-gen-proto.sh
 
 ##@ Utilities
 clean: ## Clean all build artifacts
