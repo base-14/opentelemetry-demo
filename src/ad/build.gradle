@@ -2,6 +2,7 @@
 plugins {
     id 'com.google.protobuf' version '0.9.5'
     id 'com.github.sherter.google-java-format' version '0.9'
+    id 'com.diffplug.spotless' version '6.25.0'
     id 'idea'
     id 'application'
     id 'com.github.ben-manes.versions' version '0.52.0'
@@ -106,6 +107,17 @@ afterEvaluate {
 
 googleJavaFormat {
     toolVersion '1.18.1'
+}
+
+// Spotless configuration
+spotless {
+    java {
+        target 'src/**/*.java'
+        googleJavaFormat()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
 }
 
 // Inform IDEs like IntelliJ IDEA, Eclipse or NetBeans about the generated code.

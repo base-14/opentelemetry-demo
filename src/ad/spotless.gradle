@@ -1,0 +1,12 @@
+// Spotless configuration for ad service
+apply plugin: 'com.diffplug.spotless'
+
+spotless {
+    java {
+        target 'src/**/*.java'
+        googleJavaFormat()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
