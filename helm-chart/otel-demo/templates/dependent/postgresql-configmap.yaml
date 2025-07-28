@@ -10,9 +10,9 @@ data:
   init.sql: |
     CREATE USER {{ .Values.postgresql.auth.otherUser }} WITH PASSWORD '{{ .Values.postgresql.auth.otherPassword }}';
     GRANT ALL PRIVILEGES ON DATABASE {{ .Values.postgresql.auth.database }} TO {{ .Values.postgresql.auth.otherUser }};
-    
+
     \c {{ .Values.postgresql.auth.database }};
-    
+
     CREATE TABLE IF NOT EXISTS accounts (
         id SERIAL PRIMARY KEY,
         user_id VARCHAR(100) NOT NULL,
@@ -21,7 +21,7 @@ data:
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
-    
+
     CREATE TABLE IF NOT EXISTS transactions (
         id SERIAL PRIMARY KEY,
         account_id INTEGER REFERENCES accounts(id),
@@ -30,11 +30,11 @@ data:
         description TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
-    
+
     CREATE INDEX idx_accounts_user_id ON accounts(user_id);
     CREATE INDEX idx_transactions_account_id ON transactions(account_id);
     CREATE INDEX idx_transactions_created_at ON transactions(created_at);
-    
+
     GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO {{ .Values.postgresql.auth.otherUser }};
     GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO {{ .Values.postgresql.auth.otherUser }};
 {{- end }}
