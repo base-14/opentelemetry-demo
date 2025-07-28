@@ -34,8 +34,8 @@ jobs:
 
       - name: Update Chart.yaml with release version
         run: |
-          sed -i "s/^version:.*/version: ${{ steps.version.outputs.version }}/" helm-chart/otel-demo/Chart.yaml
-          sed -i "s/^appVersion:.*/appVersion: ${{ steps.version.outputs.version }}/" helm-chart/otel-demo/Chart.yaml
+          sed -i "s/^version:.*/version: \"${{ steps.version.outputs.version }}\"/" helm-chart/otel-demo/Chart.yaml
+          sed -i "s/^appVersion:.*/appVersion: \"${{ steps.version.outputs.version }}\"/" helm-chart/otel-demo/Chart.yaml
 
       - name: Lint Helm chart
         run: |
