@@ -623,8 +623,11 @@ check-clean-work-tree: ## Check if git working tree is clean
 	@echo "$(GREEN)✅ Working tree is clean$(NC)"
 
 ##@ Utilities
-clean: ## Clean all build artifacts
+clean: ## Clean all build artifacts and generated protobuf files
 	@echo "$(YELLOW)Cleaning build artifacts...$(NC)"
+	rm -rf ./src/{checkout,product-catalog}/genproto/oteldemo/
+	rm -rf ./src/recommendation/{demo_pb2,demo_pb2_grpc}.py
+	rm -rf ./src/frontend/protos/demo.ts
 	@for service in $(DOTNET_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			cd $$service && dotnet clean && cd - > /dev/null; \
