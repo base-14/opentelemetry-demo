@@ -1,7 +1,7 @@
 # OpenTelemetry Demo - Base14 Fork
 # Makefile for development, testing, and CI simulation
 
-.PHONY: help install build test lint clean ci docker helm docker-generate-protobuf
+.PHONY: help install build test lint clean ci docker helm docker-generate-protobuf check-clean-work-tree
 .DEFAULT_GOAL := help
 
 # Colors for output
@@ -610,6 +610,17 @@ misspell: ## Check for misspellings
 docker-generate-protobuf: ## Generate protobuf files using Docker
 	@echo "$(BLUE)Generating protobuf files...$(NC)"
 	@./docker-gen-proto.sh
+
+check-clean-work-tree: ## Check if git working tree is clean
+	@echo "$(BLUE)Checking git working tree...$(NC)"
+	@if ! git diff --quiet; then \
+		echo ""; \
+		echo "$(RED)Working tree is not clean, did you forget to run 'make docker-generate-protobuf'?$(NC)"; \
+		echo ""; \
+		git status; \
+		exit 1; \
+	fi
+	@echo "$(GREEN)✅ Working tree is clean$(NC)"
 
 ##@ Utilities
 clean: ## Clean all build artifacts
