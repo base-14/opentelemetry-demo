@@ -591,6 +591,22 @@ markdownlint: ## Run markdown linting
 		echo "$(YELLOW)markdownlint not installed, skipping$(NC)"; \
 	fi
 
+checklicense: ## Check license headers
+	@echo "$(BLUE)Checking license headers...$(NC)"
+	@if command -v addlicense >/dev/null 2>&1; then \
+		addlicense -check .; \
+	else \
+		echo "$(YELLOW)addlicense not installed, skipping$(NC)"; \
+	fi
+
+misspell: ## Check for misspellings
+	@echo "$(BLUE)Checking for misspellings...$(NC)"
+	@if command -v misspell >/dev/null 2>&1; then \
+		misspell -error .; \
+	else \
+		echo "$(YELLOW)misspell not installed, skipping$(NC)"; \
+	fi
+
 ##@ Utilities
 clean: ## Clean all build artifacts
 	@echo "$(YELLOW)Cleaning build artifacts...$(NC)"

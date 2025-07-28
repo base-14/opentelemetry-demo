@@ -3,8 +3,8 @@ global:
   imageRegistry: ghcr.io
   imagePullSecrets: []
   storageClass: ""
-  
-# Demo version configuration  
+
+# Demo version configuration
 demo:
   version: 2.0.2
   image:

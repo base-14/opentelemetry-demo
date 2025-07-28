@@ -21,7 +21,7 @@ data:
         token_url: {{ .Values.scout.tokenUrl }}
         tls:
           insecure_skip_verify: true
-    
+
     receivers:
       otlp:
         protocols:
@@ -33,7 +33,7 @@ data:
               allowed_origins:
                 - "http://*"
                 - "https://*"
-    
+
     processors:
       batch:
         timeout: 2s
@@ -65,7 +65,7 @@ data:
             - k8s.namespace.name
             - k8s.node.name
             - k8s.pod.start_time
-    
+
     exporters:
       debug:
         verbosity: normal
@@ -75,7 +75,7 @@ data:
           authenticator: oauth2client
         tls:
           insecure_skip_verify: true
-    
+
     service:
       extensions: [oauth2client, health_check]
       pipelines:
@@ -104,7 +104,7 @@ data:
               allowed_origins:
                 - "http://*"
                 - "https://*"
-    
+
     processors:
       batch: {}
       resource:
@@ -123,7 +123,7 @@ data:
             - k8s.namespace.name
             - k8s.node.name
             - k8s.pod.start_time
-    
+
     exporters:
       debug:
         verbosity: detailed
@@ -144,11 +144,11 @@ data:
         endpoint: "http://{{ .Values.opensearch.name }}:{{ .Values.opensearch.port }}"
         logs_index: otel-logs
       {{- end }}
-    
+
     connectors:
       spanmetrics:
         namespace: otel.demo
-    
+
     service:
       pipelines:
         traces:

@@ -57,21 +57,21 @@ jobs:
           prerelease: false
           body: |
             ## Helm Chart Release ${{ steps.version.outputs.tag }}
-            
+
             ### Changes
             - OpenTelemetry Demo Base14 Fork
             - Scout observability integration
             - Multi-language service support
-            
+
             ### Installation
             ```bash
             # Add the chart
             helm repo add base14-otel-demo https://github.com/base-14/otel-demo/releases/download/${{ steps.version.outputs.tag }}/
-            
+
             # Install the chart
             helm install otel-demo base14-otel-demo/otel-demo --version ${{ steps.version.outputs.version }}
             ```
-            
+
             ### With Scout Integration
             ```bash
             # Create values file for Scout
@@ -81,11 +81,11 @@ jobs:
               endpoint: "https://your-scout-endpoint"
               appName: "your-app-name"
               apiKey: "your-api-key"
-            
+
             telemetry:
               enabled: false  # Disable built-in telemetry when using Scout
             EOF
-            
+
             # Install with Scout
             helm install otel-demo base14-otel-demo/otel-demo -f values-scout.yaml --version ${{ steps.version.outputs.version }}
             ```

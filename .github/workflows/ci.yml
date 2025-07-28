@@ -61,7 +61,7 @@ jobs:
             email:
               - 'src/email/**'
             flagd-ui:
-              - 'src/flagd-ui/**'  
+              - 'src/flagd-ui/**'
             fraud-detection:
               - 'src/fraud-detection/**'
             frontend:
@@ -95,38 +95,38 @@ jobs:
           - service: accounting
             path: src/accounting
             has-tests: false
-          - service: cart  
+          - service: cart
             path: src/cart
             has-tests: true
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup .NET
         if: (matrix.service == 'accounting' && needs.detect-changes.outputs.accounting == 'true') || (matrix.service == 'cart' && needs.detect-changes.outputs.cart == 'true')
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-      
+
       - name: Restore dependencies
         if: (matrix.service == 'accounting' && needs.detect-changes.outputs.accounting == 'true') || (matrix.service == 'cart' && needs.detect-changes.outputs.cart == 'true')
         working-directory: ${{ matrix.path }}
         run: dotnet restore
-      
+
       - name: Build
         if: (matrix.service == 'accounting' && needs.detect-changes.outputs.accounting == 'true') || (matrix.service == 'cart' && needs.detect-changes.outputs.cart == 'true')
         working-directory: ${{ matrix.path }}
         run: dotnet build --no-restore --configuration Release
-      
+
       - name: Lint with dotnet format
         if: (matrix.service == 'accounting' && needs.detect-changes.outputs.accounting == 'true') || (matrix.service == 'cart' && needs.detect-changes.outputs.cart == 'true')
         working-directory: ${{ matrix.path }}
         run: dotnet format --verify-no-changes --verbosity diagnostic
-      
+
       - name: Run tests
         if: matrix.has-tests && ((matrix.service == 'accounting' && needs.detect-changes.outputs.accounting == 'true') || (matrix.service == 'cart' && needs.detect-changes.outputs.cart == 'true'))
         working-directory: ${{ matrix.path }}
         run: dotnet test --no-build --configuration Release --logger trx --results-directory TestResults/
-      
+
       - name: Upload test results
         if: matrix.has-tests && always() && ((matrix.service == 'accounting' && needs.detect-changes.outputs.accounting == 'true') || (matrix.service == 'cart' && needs.detect-changes.outputs.cart == 'true'))
         uses: actions/upload-artifact@v4
@@ -149,33 +149,33 @@ jobs:
             path: src/fraud-detection
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up JDK
         if: (matrix.service == 'ad' && needs.detect-changes.outputs.ad == 'true') || (matrix.service == 'fraud-detection' && needs.detect-changes.outputs.fraud-detection == 'true')
         uses: actions/setup-java@v4
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
-      
+
       - name: Setup Gradle
         if: (matrix.service == 'ad' && needs.detect-changes.outputs.ad == 'true') || (matrix.service == 'fraud-detection' && needs.detect-changes.outputs.fraud-detection == 'true')
         uses: gradle/actions/setup-gradle@v4
-      
+
       - name: Build with Gradle
         if: (matrix.service == 'ad' && needs.detect-changes.outputs.ad == 'true') || (matrix.service == 'fraud-detection' && needs.detect-changes.outputs.fraud-detection == 'true')
         working-directory: ${{ matrix.path }}
         run: ./gradlew build
-      
+
       - name: Lint with Spotless
         if: (matrix.service == 'ad' && needs.detect-changes.outputs.ad == 'true') || (matrix.service == 'fraud-detection' && needs.detect-changes.outputs.fraud-detection == 'true')
         working-directory: ${{ matrix.path }}
         run: ./gradlew spotlessCheck
-      
+
       - name: Run tests
         if: (matrix.service == 'ad' && needs.detect-changes.outputs.ad == 'true') || (matrix.service == 'fraud-detection' && needs.detect-changes.outputs.fraud-detection == 'true')
         working-directory: ${{ matrix.path }}
         run: ./gradlew test
-      
+
       - name: Upload test results
         if: always() && ((matrix.service == 'ad' && needs.detect-changes.outputs.ad == 'true') || (matrix.service == 'fraud-detection' && needs.detect-changes.outputs.fraud-detection == 'true'))
         uses: actions/upload-artifact@v4
@@ -198,35 +198,35 @@ jobs:
             path: src/product-catalog
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Go
         if: (matrix.service == 'checkout' && needs.detect-changes.outputs.checkout == 'true') || (matrix.service == 'product-catalog' && needs.detect-changes.outputs.product-catalog == 'true')
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
-      
+
       - name: Download dependencies
         if: (matrix.service == 'checkout' && needs.detect-changes.outputs.checkout == 'true') || (matrix.service == 'product-catalog' && needs.detect-changes.outputs.product-catalog == 'true')
         working-directory: ${{ matrix.path }}
         run: go mod download
-      
+
       - name: Build
         if: (matrix.service == 'checkout' && needs.detect-changes.outputs.checkout == 'true') || (matrix.service == 'product-catalog' && needs.detect-changes.outputs.product-catalog == 'true')
         working-directory: ${{ matrix.path }}
         run: go build -v ./...
-      
+
       - name: Lint with golangci-lint
         if: (matrix.service == 'checkout' && needs.detect-changes.outputs.checkout == 'true') || (matrix.service == 'product-catalog' && needs.detect-changes.outputs.product-catalog == 'true')
         uses: golangci/golangci-lint-action@v6
         with:
           version: latest
           working-directory: ${{ matrix.path }}
-      
+
       - name: Run tests
         if: (matrix.service == 'checkout' && needs.detect-changes.outputs.checkout == 'true') || (matrix.service == 'product-catalog' && needs.detect-changes.outputs.product-catalog == 'true')
         working-directory: ${{ matrix.path }}
         run: go test -v -race -coverprofile=coverage.out ./...
-      
+
       - name: Upload coverage
         if: (matrix.service == 'checkout' && needs.detect-changes.outputs.checkout == 'true') || (matrix.service == 'product-catalog' && needs.detect-changes.outputs.product-catalog == 'true')
         uses: codecov/codecov-action@v4
@@ -251,7 +251,7 @@ jobs:
             path: src/flagd-ui
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         if: (matrix.service == 'frontend' && needs.detect-changes.outputs.frontend == 'true') || (matrix.service == 'payment' && needs.detect-changes.outputs.payment == 'true') || (matrix.service == 'flagd-ui' && needs.detect-changes.outputs.flagd-ui == 'true')
         uses: actions/setup-node@v4
@@ -259,12 +259,12 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
           cache-dependency-path: ${{ matrix.path }}/package-lock.json
-      
+
       - name: Install dependencies
         if: (matrix.service == 'frontend' && needs.detect-changes.outputs.frontend == 'true') || (matrix.service == 'payment' && needs.detect-changes.outputs.payment == 'true') || (matrix.service == 'flagd-ui' && needs.detect-changes.outputs.flagd-ui == 'true')
         working-directory: ${{ matrix.path }}
         run: npm ci
-      
+
       - name: Lint
         if: (matrix.service == 'frontend' && needs.detect-changes.outputs.frontend == 'true') || (matrix.service == 'payment' && needs.detect-changes.outputs.payment == 'true') || (matrix.service == 'flagd-ui' && needs.detect-changes.outputs.flagd-ui == 'true')
         working-directory: ${{ matrix.path }}
@@ -274,7 +274,7 @@ jobs:
           else
             echo "No lint script found, skipping"
           fi
-      
+
       - name: Type check (TypeScript)
         if: (matrix.service == 'frontend' && needs.detect-changes.outputs.frontend == 'true') || (matrix.service == 'flagd-ui' && needs.detect-changes.outputs.flagd-ui == 'true')
         working-directory: ${{ matrix.path }}
@@ -282,7 +282,7 @@ jobs:
           if [ -f "tsconfig.json" ]; then
             npx tsc --noEmit
           fi
-      
+
       - name: Build
         if: (matrix.service == 'frontend' && needs.detect-changes.outputs.frontend == 'true') || (matrix.service == 'flagd-ui' && needs.detect-changes.outputs.flagd-ui == 'true')
         working-directory: ${{ matrix.path }}
@@ -292,7 +292,7 @@ jobs:
           else
             echo "No build script found, skipping"
           fi
-      
+
       - name: Run tests
         if: (matrix.service == 'frontend' && needs.detect-changes.outputs.frontend == 'true') || (matrix.service == 'payment' && needs.detect-changes.outputs.payment == 'true') || (matrix.service == 'flagd-ui' && needs.detect-changes.outputs.flagd-ui == 'true')
         working-directory: ${{ matrix.path }}
@@ -318,13 +318,13 @@ jobs:
             path: src/load-generator
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         if: (matrix.service == 'recommendation' && needs.detect-changes.outputs.recommendation == 'true') || (matrix.service == 'load-generator' && needs.detect-changes.outputs.load-generator == 'true')
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      
+
       - name: Install dependencies
         if: (matrix.service == 'recommendation' && needs.detect-changes.outputs.recommendation == 'true') || (matrix.service == 'load-generator' && needs.detect-changes.outputs.load-generator == 'true')
         working-directory: ${{ matrix.path }}
@@ -332,7 +332,7 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           pip install flake8 black pytest pytest-cov
-      
+
       - name: Lint with flake8
         if: (matrix.service == 'recommendation' && needs.detect-changes.outputs.recommendation == 'true') || (matrix.service == 'load-generator' && needs.detect-changes.outputs.load-generator == 'true')
         working-directory: ${{ matrix.path }}
@@ -341,12 +341,12 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-      
+
       - name: Format check with black
         if: (matrix.service == 'recommendation' && needs.detect-changes.outputs.recommendation == 'true') || (matrix.service == 'load-generator' && needs.detect-changes.outputs.load-generator == 'true')
         working-directory: ${{ matrix.path }}
         run: black --check .
-      
+
       - name: Run tests with pytest
         if: (matrix.service == 'recommendation' && needs.detect-changes.outputs.recommendation == 'true') || (matrix.service == 'load-generator' && needs.detect-changes.outputs.load-generator == 'true')
         working-directory: ${{ matrix.path }}
@@ -364,30 +364,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ env.PHP_VERSION }}
           extensions: mbstring, xml, ctype, iconv, intl
           tools: composer:v2
-      
+
       - name: Install dependencies
         working-directory: src/quote
         run: composer install --prefer-dist --no-progress
-      
+
       - name: Lint with PHP CS Fixer
         working-directory: src/quote
         run: |
           composer require --dev friendsofphp/php-cs-fixer
           vendor/bin/php-cs-fixer fix --dry-run --diff
-      
+
       - name: Run PHPStan
         working-directory: src/quote
         run: |
           composer require --dev phpstan/phpstan
           vendor/bin/phpstan analyse src --level=1
-      
+
       - name: Run tests
         working-directory: src/quote
         run: |
@@ -405,20 +405,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
           working-directory: src/email
           bundler-cache: true
-      
+
       - name: Lint with RuboCop
         working-directory: src/email
         run: |
           gem install rubocop
           rubocop --format progress --display-cop-names
-      
+
       - name: Run tests
         working-directory: src/email
         run: |
@@ -435,25 +435,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: ${{ env.RUST_VERSION }}
           components: rustfmt, clippy
-      
+
       - name: Build
         working-directory: src/shipping
         run: cargo build --verbose
-      
+
       - name: Lint with Clippy
         working-directory: src/shipping
         run: cargo clippy -- -D warnings
-      
+
       - name: Format check
         working-directory: src/shipping
         run: cargo fmt --all -- --check
-      
+
       - name: Run tests
         working-directory: src/shipping
         run: cargo test --verbose
@@ -465,12 +465,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y cmake build-essential
-      
+
       - name: Build
         working-directory: src/currency
         run: |
@@ -478,13 +478,13 @@ jobs:
           cd build
           cmake ..
           make
-      
+
       - name: Lint with clang-format
         working-directory: src/currency
         run: |
           sudo apt-get install -y clang-format
           find src -name '*.cpp' -o -name '*.h' | xargs clang-format --dry-run -Werror
-      
+
       - name: Run tests
         working-directory: src/currency/build
         run: |
@@ -501,20 +501,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Helm
         uses: azure/setup-helm@v4
         with:
           version: '3.14.0'
-      
+
       - name: Lint Helm chart
         run: |
           helm lint helm-chart/otel-demo
-      
+
       - name: Template Helm chart
         run: |
           helm template test-release helm-chart/otel-demo --debug
-      
+
       - name: Validate with values-scout.yaml
         run: |
           helm template test-release helm-chart/otel-demo -f helm-chart/otel-demo/values-scout.yaml --debug
@@ -530,7 +530,7 @@ jobs:
           echo "CI Summary:"
           echo "Changes detected: ${{ toJson(needs.detect-changes.outputs) }}"
           echo "All jobs completed"
-          
+
           # Check if any job failed
           if [[ "${{ contains(needs.*.result, 'failure') }}" == "true" ]]; then
             echo "❌ Some jobs failed"
