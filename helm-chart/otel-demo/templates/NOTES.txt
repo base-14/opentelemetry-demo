@@ -1,0 +1,98 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }}
+  $ helm get all {{ .Release.Name }}
+
+=================================
+🎉 OpenTelemetry Demo Deployed! 🎉
+=================================
+
+The OpenTelemetry Demo application has been successfully deployed to your Kubernetes cluster.
+
+📊 Access the Application:
+{{- if .Values.frontendProxy.enabled }}
+
+1. Frontend Application:
+   {{- if eq .Values.frontendProxy.type "NodePort" }}
+   - NodePort: http://<NODE_IP>:{{ .Values.frontendProxy.nodePort }}
+   {{- else if eq .Values.frontendProxy.type "LoadBalancer" }}
+   - LoadBalancer: http://<EXTERNAL_IP>:{{ .Values.frontendProxy.port }}
+     Run: kubectl get svc {{ .Values.frontendProxy.name }} -n {{ .Release.Namespace }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+   {{- else }}
+   - ClusterIP: http://{{ .Values.frontendProxy.name }}:{{ .Values.frontendProxy.port }}
+   {{- end }}
+{{- end }}
+
+{{- if .Values.loadGenerator.enabled }}
+
+2. Load Generator (Locust):
+   - Port-forward: kubectl port-forward -n {{ .Release.Namespace }} svc/{{ .Values.loadGenerator.name }} 8089:{{ .Values.loadGenerator.port }}
+   - Access: http://localhost:8089
+{{- end }}
+
+🔍 Observability Tools:
+{{- if .Values.scout.enabled }}
+
+📊 Scout Integration Active:
+   - Telemetry data is being sent to Scout
+   - Endpoint: {{ .Values.scout.endpoint }}
+   - Environment: {{ .Values.scout.environment }}
+   - Access your Scout dashboard to view traces, metrics, and logs
+
+{{- else }}
+{{- if .Values.jaeger.enabled }}
+
+1. Jaeger UI (Distributed Tracing):
+   - Port-forward: kubectl port-forward -n {{ .Release.Namespace }} svc/{{ .Values.jaeger.name }} 16686:{{ .Values.jaeger.ports.ui }}
+   - Access: http://localhost:16686
+{{- end }}
+
+{{- if .Values.grafana.enabled }}
+
+2. Grafana (Metrics Dashboard):
+   - Port-forward: kubectl port-forward -n {{ .Release.Namespace }} svc/{{ .Values.grafana.name }} 3000:{{ .Values.grafana.port }}
+   - Access: http://localhost:3000
+   - Username: admin
+   - Password: {{ .Values.grafana.adminPassword }}
+{{- end }}
+
+{{- if .Values.prometheus.enabled }}
+
+3. Prometheus (Metrics):
+   - Port-forward: kubectl port-forward -n {{ .Release.Namespace }} svc/{{ .Values.prometheus.name }} 9090:{{ .Values.prometheus.port }}
+   - Access: http://localhost:9090
+{{- end }}
+{{- end }}
+
+{{- if .Values.flagdUI.enabled }}
+
+🚩 Feature Flags:
+
+FlagD UI:
+   - Port-forward: kubectl port-forward -n {{ .Release.Namespace }} svc/{{ .Values.flagdUI.name }} 4000:{{ .Values.flagdUI.port }}
+   - Access: http://localhost:4000
+{{- end }}
+
+📝 Quick Commands:
+
+# Check pod status
+kubectl get pods -n {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }}
+
+# View logs for a specific service
+kubectl logs -n {{ .Release.Namespace }} -l app.kubernetes.io/component=<SERVICE_NAME>
+
+# Scale a service
+kubectl scale deployment/<SERVICE_NAME> --replicas=3 -n {{ .Release.Namespace }}
+
+🛠️ Troubleshooting:
+
+If pods are not starting:
+1. Check pod status: kubectl describe pod <POD_NAME> -n {{ .Release.Namespace }}
+2. Check logs: kubectl logs <POD_NAME> -n {{ .Release.Namespace }}
+3. Verify resource availability: kubectl top nodes
+
+For more information, visit: https://github.com/open-telemetry/opentelemetry-demo

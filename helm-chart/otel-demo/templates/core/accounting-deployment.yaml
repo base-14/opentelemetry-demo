@@ -1,0 +1,43 @@
+{{- if .Values.accounting.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.accounting.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "otel-demo.componentLabels" (dict "root" . "component" "accounting") | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "otel-demo.componentSelectorLabels" (dict "root" . "component" "accounting") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "otel-demo.componentLabels" (dict "root" . "component" "accounting") | nindent 8 }}
+    spec:
+      {{- include "otel-demo.imagePullSecrets" . | nindent 6 }}
+      containers:
+      - name: accounting
+        image: "{{ .Values.accounting.image.repository }}:{{ .Values.accounting.image.tag }}"
+        imagePullPolicy: {{ .Values.demo.image.pullPolicy }}
+        env:
+        {{- include "otel-demo.otelEnv" . | nindent 8 }}
+        {{- with .Values.accounting.env }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.accounting.resources | nindent 10 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

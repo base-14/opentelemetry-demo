@@ -1,0 +1,64 @@
+{{- if .Values.otelCollector.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.otelCollector.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "otel-demo.componentLabels" (dict "root" . "component" "otel-collector") | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "otel-demo.componentSelectorLabels" (dict "root" . "component" "otel-collector") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "otel-demo.componentLabels" (dict "root" . "component" "otel-collector") | nindent 8 }}
+    spec:
+      {{- include "otel-demo.imagePullSecrets" . | nindent 6 }}
+      containers:
+      - name: otel-collector
+        image: "{{ .Values.otelCollector.image.repository }}:{{ .Values.otelCollector.image.tag }}"
+        imagePullPolicy: {{ .Values.demo.image.pullPolicy }}
+        command:
+        - "/otelcol-contrib"
+        - "--config=/etc/otel-collector/config.yaml"
+        ports:
+        - containerPort: {{ .Values.otelCollector.ports.grpc }}
+          name: otlp-grpc
+        - containerPort: {{ .Values.otelCollector.ports.http }}
+          name: otlp-http
+        - containerPort: 8889
+          name: prometheus
+        env:
+        - name: GOMEMLIMIT
+          value: "160MiB"
+        - name: OTEL_COLLECTOR_HOST
+          value: {{ .Values.otelCollector.name }}
+        - name: OTEL_COLLECTOR_PORT_GRPC
+          value: "{{ .Values.otelCollector.ports.grpc }}"
+        - name: OTEL_COLLECTOR_PORT_HTTP
+          value: "{{ .Values.otelCollector.ports.http }}"
+        volumeMounts:
+        - name: config
+          mountPath: /etc/otel-collector
+        resources:
+          {{- toYaml .Values.otelCollector.resources | nindent 10 }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ .Values.otelCollector.name }}-config
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
