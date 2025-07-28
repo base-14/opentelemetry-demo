@@ -17,9 +17,9 @@ class TestRecommendationService(unittest.TestCase):
         request = MagicMock()
         request.user_id = ""
         context = MagicMock()
-        
+
         response = self.service.ListRecommendations(request, context)
-        
+
         self.assertEqual(len(response.product_ids), 0)
 
     def test_list_recommendations_valid_user_id(self):
@@ -27,12 +27,12 @@ class TestRecommendationService(unittest.TestCase):
         request = MagicMock()
         request.user_id = "test_user"
         context = MagicMock()
-        
+
         with patch('recommendation_server.get_product_list') as mock_get_products:
             mock_get_products.return_value = ["product1", "product2", "product3"]
-            
+
             response = self.service.ListRecommendations(request, context)
-            
+
             self.assertGreater(len(response.product_ids), 0)
             self.assertLessEqual(len(response.product_ids), 5)  # Max 5 recommendations
 
@@ -42,9 +42,9 @@ class TestRecommendationService(unittest.TestCase):
         request = MagicMock()
         request.user_id = "test_user"
         context = MagicMock()
-        
+
         self.service.ListRecommendations(request, context)
-        
+
         mock_logger.info.assert_called()
 
 

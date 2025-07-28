@@ -299,7 +299,7 @@ kubectl logs -n otel-demo -l app.kubernetes.io/component=frontend
 
 #### Scout-specific Issues
 
-5. **Scout authentication failed**: 
+5. **Scout authentication failed**:
    - Verify `scout.apiKey` is correct
    - Check `scout.endpoint` matches your Scout project
    - Ensure `scout.tokenUrl` is accessible from the cluster

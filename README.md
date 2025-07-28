@@ -5,7 +5,7 @@
 >
 > This fork extends the original [OpenTelemetry Demo](https://github.com/open-telemetry/opentelemetry-demo) with additional features, including a comprehensive Helm chart and Scout observability platform integration.
 >
-> **🆕 Added Features:**
+> **Added Features:**
 > - **Production-ready Helm Chart** with full Kubernetes deployment support
 > - **Scout Integration** - Alternative to built-in telemetry stack (Jaeger, Prometheus, Grafana)
 > - **Enhanced Documentation** with deployment guides and troubleshooting
@@ -50,7 +50,7 @@ You can be up and running with the demo in a few minutes. This Base14 fork provi
 
 ### Deployment Options
 
-#### 🚀 Helm Chart (Recommended - Base14 Addition)
+#### Helm Chart (Recommended - Base14 Addition)
 Deploy with our production-ready Helm chart:
 
 ```bash
@@ -67,9 +67,9 @@ helm install otel-demo ./helm-chart/otel-demo -n otel-demo --create-namespace -f
 - Production-ready configurations with resource limits and health checks
 - Comprehensive documentation and troubleshooting guides
 
-📖 **[Complete Helm Chart Documentation](./helm-chart/otel-demo/README.md)**
+**[Complete Helm Chart Documentation](./helm-chart/otel-demo/README.md)**
 
-#### 🐳 Original Deployment Methods
+#### Original Deployment Methods
 - [Docker](https://opentelemetry.io/docs/demo/docker_deployment/)
 - [Kubernetes (Original)](https://opentelemetry.io/docs/demo/kubernetes_deployment/)
 
@@ -104,12 +104,12 @@ keeping it up to date for you.
 
 ## Base14 Enhancements
 
-### 🔭 Scout Integration
+### Scout Integration
 
 This fork includes native integration with **Scout**, Base14's comprehensive observability platform. Scout provides:
 
 - **Unified Observability**: Traces, metrics, and logs in a single platform
-- **Advanced Analytics**: AI-powered insights and anomaly detection  
+- **Advanced Analytics**: AI-powered insights and anomaly detection
 - **Enterprise Features**: Multi-tenancy, RBAC, and compliance controls
 - **Cost Optimization**: Intelligent sampling and data retention policies
 
@@ -130,7 +130,7 @@ helm install otel-demo ./helm-chart/otel-demo -n otel-demo --create-namespace -f
 
 For more details, see the [Helm Chart Scout Integration Guide](./helm-chart/otel-demo/README.md#scout-integration).
 
-### 📦 Production-Ready Helm Chart
+### Production-Ready Helm Chart
 
 Our Helm chart provides enterprise-grade deployment capabilities:
 

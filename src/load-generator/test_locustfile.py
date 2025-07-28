@@ -16,7 +16,7 @@ class TestWebsiteUser(unittest.TestCase):
     def test_user_has_required_tasks(self):
         """Test that WebsiteUser has the required task methods"""
         user = WebsiteUser(MagicMock())
-        
+
         # Check that the required methods exist
         self.assertTrue(hasattr(user, 'index'))
         self.assertTrue(hasattr(user, 'browse_product'))
@@ -27,7 +27,7 @@ class TestWebsiteUser(unittest.TestCase):
     def test_index_task_logs(self, mock_logger):
         """Test that index task logs appropriately"""
         user = WebsiteUser(MagicMock())
-        
+
         # This would require more setup to actually test the HTTP calls
         # For now, just test that the method exists and can be called
         self.assertTrue(callable(getattr(user, 'index', None)))
