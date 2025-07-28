@@ -10,6 +10,7 @@ plugins {
     id("idea")
     id("com.google.protobuf") version "0.9.6"
     id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.diffplug.spotless") version "6.25.0"
 }
 
 group = "io.opentelemetry"
@@ -98,4 +99,14 @@ application {
 
 tasks.jar {
     manifest.attributes["Main-Class"] = "frauddetection.MainKt"
+}
+
+// Spotless configuration
+spotless {
+    kotlin {
+        target("src/**/*.kt")
+        ktfmt()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
 }
