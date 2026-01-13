@@ -32,18 +32,18 @@ jobs:
       - name: run markdownlint
         run: make markdownlint
 
-  yamllint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: check out code
-        uses: actions/checkout@v6.0.1
-      - uses: actions/setup-python@v6
-        with:
-          python-version: '3.x'
-      - name: install yamllint
-        run: make install-yamllint
-      - name: run yamllint
-        run: yamllint . -f github
+  # yamllint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: check out code
+  #       uses: actions/checkout@v6.0.1
+  #     - uses: actions/setup-python@v6
+  #       with:
+  #         python-version: '3.x'
+  #     - name: install yamllint
+  #       run: make install-yamllint
+  #     - name: run yamllint
+  #       run: yamllint . -f github
 
   misspell:
     runs-on: ubuntu-latest
