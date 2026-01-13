@@ -1,23 +1,28 @@
 <!-- markdownlint-disable-next-line -->
-# <img src="https://opentelemetry.io/img/logos/opentelemetry-logo-nav.png" alt="OTel logo" width="45"> OpenTelemetry Demo
+# <img src="https://opentelemetry.io/img/logos/opentelemetry-logo-nav.png" alt="OTel logo" width="45"> OpenTelemetry Demo - Base14 Fork
 
-[![Slack](https://img.shields.io/badge/slack-@cncf/otel/demo-brightgreen.svg?logo=slack)](https://cloud-native.slack.com/archives/C03B4CWV4DA)
-[![Version](https://img.shields.io/github/v/release/open-telemetry/opentelemetry-demo?color=blueviolet)](https://github.com/open-telemetry/opentelemetry-demo/releases)
-[![Commits](https://img.shields.io/github/commits-since/open-telemetry/opentelemetry-demo/latest?color=ff69b4&include_prereleases)](https://github.com/open-telemetry/opentelemetry-demo/graphs/commit-activity)
-[![Downloads](https://img.shields.io/docker/pulls/otel/demo)](https://hub.docker.com/r/otel/demo)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?color=red)](https://github.com/open-telemetry/opentelemetry-demo/blob/main/LICENSE)
-[![Integration Tests](https://github.com/open-telemetry/opentelemetry-demo/actions/workflows/run-integration-tests.yml/badge.svg)](https://github.com/open-telemetry/opentelemetry-demo/actions/workflows/run-integration-tests.yml)
-[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/opentelemetry-demo)](https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-demo)
-[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B162%2Fgithub.com%2Fopen-telemetry%2Fopentelemetry-demo.svg?type=shield&issueType=license)](https://app.fossa.com/projects/custom%2B162%2Fgithub.com%2Fopen-telemetry%2Fopentelemetry-demo?ref=badge_shield&issueType=license)
-[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B162%2Fgithub.com%2Fopen-telemetry%2Fopentelemetry-demo.svg?type=shield&issueType=security)](https://app.fossa.com/projects/custom%2B162%2Fgithub.com%2Fopen-telemetry%2Fopentelemetry-demo?ref=badge_shield&issueType=security)
-[![OpenSSF Scorecard for opentelemetry-demo](https://api.scorecard.dev/projects/github.com/open-telemetry/opentelemetry-demo/badge)](https://scorecard.dev/viewer/?uri=github.com/open-telemetry/opentelemetry-demo)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9247/badge)](https://www.bestpractices.dev/en/projects/9247)
+> **Note: This is a Base14 fork of the official OpenTelemetry Demo**
+>
+> This fork extends the original [OpenTelemetry Demo](https://github.com/open-telemetry/opentelemetry-demo) with additional features, including a comprehensive Helm chart and Scout observability platform integration.
+>
+> **Added Features:**
+> - **Production-ready Helm Chart** with full Kubernetes deployment support
+> - **Scout Integration** - Alternative to built-in telemetry stack (Jaeger, Prometheus, Grafana)
+> - **Enhanced Documentation** with deployment guides and troubleshooting
+
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?color=red)](https://github.com/base-14/otel-demo/blob/main/LICENSE)
+[![Original Repo](https://img.shields.io/badge/Original-OpenTelemetry%20Demo-blue)](https://github.com/open-telemetry/opentelemetry-demo)
 
 ## Welcome to the OpenTelemetry Astronomy Shop Demo
 
 This repository contains the OpenTelemetry Astronomy Shop, a microservice-based
 distributed system intended to illustrate the implementation of OpenTelemetry in
 a near real-world environment.
+
+**This Base14 fork enhances the original demo with:**
+- **Kubernetes-native deployment** via comprehensive Helm chart
+- **Scout observability integration** for centralized telemetry
+- **Production-ready configurations** for enterprise deployment
 
 Our goals are threefold:
 
@@ -41,11 +46,32 @@ If you'd like to extend this demo or maintain a fork of it, read our
 
 ## Quick start
 
-You can be up and running with the demo in a few minutes. Check out the docs for
-your preferred deployment method:
+You can be up and running with the demo in a few minutes. This Base14 fork provides multiple deployment options:
 
+### Deployment Options
+
+#### Helm Chart (Recommended - Base14 Addition)
+Deploy with our production-ready Helm chart:
+
+```bash
+# Standard deployment
+helm install otel-demo ./helm-chart/otel-demo -n otel-demo --create-namespace
+
+# With Scout integration
+helm install otel-demo ./helm-chart/otel-demo -n otel-demo --create-namespace -f helm-chart/otel-demo/values-scout.yaml
+```
+
+**Features:**
+- Complete Kubernetes deployment with all services
+- Built-in telemetry stack (Jaeger, Prometheus, Grafana) or Scout integration
+- Production-ready configurations with resource limits and health checks
+- Comprehensive documentation and troubleshooting guides
+
+**[Complete Helm Chart Documentation](./helm-chart/otel-demo/README.md)**
+
+#### Original Deployment Methods
 - [Docker](https://opentelemetry.io/docs/demo/docker_deployment/)
-- [Kubernetes](https://opentelemetry.io/docs/demo/kubernetes_deployment/)
+- [Kubernetes (Original)](https://opentelemetry.io/docs/demo/kubernetes_deployment/)
 
 ## Documentation
 
@@ -76,11 +102,57 @@ keeping it up to date for you.
 | [Dynatrace]               | [OpenSearch]   |                                  |
 | [Elastic]                 | [Oracle]       |                                  |
 
+## Base14 Enhancements
+
+### Scout Integration
+
+This fork includes native integration with **Scout**, Base14's comprehensive observability platform. Scout provides:
+
+- **Unified Observability**: Traces, metrics, and logs in a single platform
+- **Advanced Analytics**: AI-powered insights and anomaly detection
+- **Enterprise Features**: Multi-tenancy, RBAC, and compliance controls
+- **Cost Optimization**: Intelligent sampling and data retention policies
+
+#### Getting Started with Scout
+
+1. **Get Scout Credentials**: Contact Base14 for your Scout endpoint and API key
+2. **Deploy with Scout**: Use the provided `values-scout.yaml` configuration
+3. **Access Dashboard**: View your telemetry data in the Scout platform
+
+```bash
+# Configure Scout values
+cp helm-chart/otel-demo/values-scout.yaml my-scout-config.yaml
+# Edit my-scout-config.yaml with your Scout credentials
+
+# Deploy with Scout
+helm install otel-demo ./helm-chart/otel-demo -n otel-demo --create-namespace -f my-scout-config.yaml
+```
+
+For more details, see the [Helm Chart Scout Integration Guide](./helm-chart/otel-demo/README.md#scout-integration).
+
+### Production-Ready Helm Chart
+
+Our Helm chart provides enterprise-grade deployment capabilities:
+
+- **Scalable Architecture**: StatefulSets for stateful services, Deployments for stateless
+- **Resource Management**: Configured limits and requests for all services
+- **Health Monitoring**: Liveness and readiness probes
+- **Security**: RBAC, service accounts, and network policies
+- **Flexibility**: Enable/disable individual services as needed
+
 ## Contributing
 
-To get involved with the project see our [CONTRIBUTING](CONTRIBUTING.md)
-documentation. Our [SIG Calls](CONTRIBUTING.md#join-a-sig-call) are every other
-Wednesday at 8:30 AM PST and anyone is welcome.
+### Contributing to Base14 Fork
+
+This is a Base14 fork with additional features. For contributions to the Base14-specific enhancements (Helm chart, Scout integration):
+
+- Open issues and PRs in this repository
+- Follow the same contribution guidelines as the upstream project
+- Ensure changes maintain compatibility with the original demo
+
+### Contributing to Upstream OpenTelemetry Demo
+
+To contribute to the original OpenTelemetry Demo project, see the [upstream CONTRIBUTING](https://github.com/open-telemetry/opentelemetry-demo/blob/main/CONTRIBUTING.md) documentation. The upstream project has [SIG Calls](https://github.com/open-telemetry/opentelemetry-demo/blob/main/CONTRIBUTING.md#join-a-sig-call) every other Wednesday at 8:30 AM PST.
 
 ### Maintainers
 
