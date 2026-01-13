@@ -1,0 +1,26 @@
+apiVersion: v2
+name: otel-demo
+description: OpenTelemetry Demo Application - A microservices application demonstrating OpenTelemetry distributed tracing
+type: application
+version: "0.1.0"
+appVersion: "2.0.2"
+keywords:
+  - opentelemetry
+  - observability
+  - distributed-tracing
+  - microservices
+  - demo
+home: https://github.com/open-telemetry/opentelemetry-demo
+sources:
+  - https://github.com/open-telemetry/opentelemetry-demo
+maintainers:
+  - name: OpenTelemetry Community
+    url: https://github.com/open-telemetry/community
+icon: https://opentelemetry.io/img/logos/opentelemetry-logo-nav.png
+dependencies:
+  # Scout Collector - Optional telemetry backend
+  # Uncomment to use Scout instead of built-in telemetry stack
+  # - name: scout-collector
+  #   version: 0.5.3
+  #   repository: https://base-14.github.io/scout-helm
+  #   condition: scout.enabled

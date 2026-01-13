@@ -1,0 +1,55 @@
+# Example values file for Scout integration
+# Use this as a template when deploying with Scout telemetry backend
+
+# Enable Scout integration
+scout:
+  enabled: true
+  endpoint: "https://otel.play.b14.dev/YOUR_PROJECT_ID/otlp"  # Replace with your Scout endpoint
+  appName: "otel-demo"
+  apiKey: "YOUR_SCOUT_API_KEY"  # Replace with your Scout API key
+  tokenUrl: "https://id.b14.dev/realms/playground/protocol/openid-connect/token"
+  audience: "b14collector"
+  environment: "production"
+
+# Disable built-in telemetry components when using Scout
+jaeger:
+  enabled: false
+
+prometheus:
+  enabled: false
+
+grafana:
+  enabled: false
+
+opensearch:
+  enabled: false
+
+# Keep the OTel Collector enabled but it will use Scout configuration
+otelCollector:
+  enabled: true
+  # Optionally increase resources for Scout export
+  resources:
+    limits:
+      memory: 512Mi
+      cpu: 500m
+    requests:
+      memory: 256Mi
+      cpu: 200m
+
+# Optional: Use Scout Collector as a dependency
+# Uncomment the dependency in Chart.yaml and configure here
+# scout-collector:
+#   scout:
+#     endpoint: "https://otel.play.b14.dev/YOUR_PROJECT_ID/otlp"
+#     appName: "otel-demo"
+#     apiKey: "YOUR_SCOUT_API_KEY"
+#     environment: "production"
+#   agent-collector:
+#     mode: deployment
+#     resources:
+#       requests:
+#         memory: 512Mi
+#         cpu: 256m
+#       limits:
+#         memory: 1Gi
+#         cpu: 512m

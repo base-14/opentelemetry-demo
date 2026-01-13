@@ -1,0 +1,18 @@
+{{- if .Values.ad.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.ad.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "otel-demo.componentLabels" (dict "root" . "component" "ad") | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "otel-demo.componentSelectorLabels" (dict "root" . "component" "ad") | nindent 4 }}
+  ports:
+  - name: grpc
+    port: {{ .Values.ad.port }}
+    targetPort: grpc
+    protocol: TCP
+{{- end }}

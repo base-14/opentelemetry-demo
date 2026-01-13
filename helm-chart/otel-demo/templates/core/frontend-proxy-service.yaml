@@ -1,0 +1,21 @@
+{{- if .Values.frontendProxy.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.frontendProxy.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "otel-demo.componentLabels" (dict "root" . "component" "frontend-proxy") | nindent 4 }}
+spec:
+  type: {{ .Values.frontendProxy.type }}
+  selector:
+    {{- include "otel-demo.componentSelectorLabels" (dict "root" . "component" "frontend-proxy") | nindent 4 }}
+  ports:
+  - name: http
+    port: {{ .Values.frontendProxy.port }}
+    targetPort: http
+    protocol: TCP
+    {{- if eq .Values.frontendProxy.type "NodePort" }}
+    nodePort: {{ .Values.frontendProxy.nodePort }}
+    {{- end }}
+{{- end }}
