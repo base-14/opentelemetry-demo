@@ -52,6 +52,6 @@ test/tracetesting/tracetesting-vars.yaml
 # Android
 *.apk
 
-!src/currency/build
+src/currency/build/generated/
 src/cart/src/Program.cs.bak
 src/flagd/demo.flagd.json.bak
