@@ -1,0 +1,36 @@
+run:
+  timeout: 5m
+  modules-download-mode: readonly
+
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    - gci
+    - gofmt
+    - goimports
+    - gosec
+    - misspell
+    - revive
+
+linters-settings:
+  gci:
+    sections:
+      - standard
+      - default
+      - prefix(github.com/open-telemetry/opentelemetry-demo)
+  revive:
+    rules:
+      - name: exported
+        arguments: [true]
+
+issues:
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
