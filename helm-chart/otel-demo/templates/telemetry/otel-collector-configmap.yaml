@@ -104,6 +104,15 @@ data:
               allowed_origins:
                 - "http://*"
                 - "https://*"
+      {{- if .Values.pgdashex.enabled }}
+      prometheus/pgdashex:
+        config:
+          scrape_configs:
+            - job_name: 'pgdashex'
+              scrape_interval: 15s
+              static_configs:
+                - targets: ['{{ .Values.pgdashex.name }}:{{ .Values.pgdashex.port }}']
+      {{- end }}
 
     processors:
       batch: {}
@@ -156,7 +165,7 @@ data:
           processors: [batch, k8sattributes, resource]
           exporters: [{{- if .Values.jaeger.enabled }}otlp/jaeger, {{- end }}debug, spanmetrics]
         metrics:
-          receivers: [otlp, spanmetrics]
+          receivers: [otlp, spanmetrics{{- if .Values.pgdashex.enabled }}, prometheus/pgdashex{{- end }}]
           processors: [batch, k8sattributes, resource]
           exporters: [{{- if .Values.prometheus.enabled }}prometheus, {{- end }}debug]
         logs:

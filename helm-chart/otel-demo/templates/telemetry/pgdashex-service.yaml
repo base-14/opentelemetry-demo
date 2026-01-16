@@ -1,0 +1,18 @@
+{{- if .Values.pgdashex.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.pgdashex.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "otel-demo.componentLabels" (dict "root" . "component" "pgdashex") | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "otel-demo.componentSelectorLabels" (dict "root" . "component" "pgdashex") | nindent 4 }}
+  ports:
+  - name: metrics
+    port: {{ .Values.pgdashex.port }}
+    targetPort: metrics
+    protocol: TCP
+{{- end }}

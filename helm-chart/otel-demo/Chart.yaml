@@ -2,7 +2,7 @@ apiVersion: v2
 name: otel-demo
 description: OpenTelemetry Demo Application - A microservices application demonstrating OpenTelemetry distributed tracing
 type: application
-version: "0.1.0"
+version: "0.2.0"
 appVersion: "2.0.2"
 keywords:
   - opentelemetry
