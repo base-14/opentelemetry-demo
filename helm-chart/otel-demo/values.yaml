@@ -501,6 +501,28 @@ valkey:
 
 # Telemetry Components
 # Note: Set these to false when using Scout integration
+pgdashex:
+  enabled: true
+  name: pgdashex
+  image:
+    repository: base14/pgdashex
+    tag: v0.5.7
+  port: 9187
+  pgUser: pgdashex_monitor
+  pgPassword: password
+  pgDatabases: "otel,postgres"
+  pgSslMode: disable
+  clusterName: otel-demo
+  collectMetrics: all
+  otelEnabled: "false"
+  resources:
+    limits:
+      memory: 256Mi
+      cpu: 200m
+    requests:
+      memory: 128Mi
+      cpu: 100m
+
 jaeger:
   enabled: true
   name: jaeger
