@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-FROM --platform=${BUILDPLATFORM} docker.io/library/rust:1.91 AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/rust:1.98.0@sha256:620dbcd124499c59e2406d3741574b5c5838cf9eb9656f0c3a03948f79b02959 AS builder
 ARG TARGETARCH
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
@@ -28,18 +28,21 @@ RUN if [ "${TARGETPLATFORM}" = "linux/arm64" ] && [ "${BUILDPLATFORM}" != "linux
             CC_aarch64_unknown_linux_gnu=aarch64-linux-gnu-gcc \
             CXX_aarch64_unknown_linux_gnu=aarch64-linux-gnu-g++ \
         cargo build -r --target aarch64-unknown-linux-gnu && \
-        cp /app/target/aarch64-unknown-linux-gnu/release/shipping /app/target/release/shipping; \
+        cp /app/target/aarch64-unknown-linux-gnu/release/shipping /app/target/release/shipping && \
+        cp /app/target/aarch64-unknown-linux-gnu/release/healthcheck /app/target/release/healthcheck; \
     else \
         cargo build -r; \
     fi
 
 
-FROM gcr.io/distroless/cc-debian13:nonroot
+FROM gcr.io/distroless/cc-debian13:nonroot@sha256:54df941ed0d06a1bd95ef5e0ce391fd8d9f94b64782dc9a60062727849ee3f97
 
 WORKDIR /app
 
 COPY --from=builder /app/target/release/shipping shipping
+COPY --from=builder /app/target/release/healthcheck healthcheck
 
+ARG SHIPPING_PORT=50050
 EXPOSE ${SHIPPING_PORT}
 
 CMD ["./shipping"]

@@ -13,7 +13,8 @@ permissions:
 
 jobs:
   build_images:
+    name: Build images
     permissions:
-      contents: read
-      packages: write
+      contents: read  # required by the component-build-images reusable workflow
+      packages: write  # required by the component-build-images reusable workflow
     uses: ./.github/workflows/component-build-images.yml

@@ -427,20 +427,25 @@ test-cpp: ## Test C++ services
 	done
 
 ##@ Docker
+# Docker targets delegate to the upstream Makefile, which owns the layered
+# compose.*.yaml files and the .env/.env.override env-file handling.
+UPSTREAM_MAKE := $(MAKE) -f Makefile.original
+
 docker-build: ## Build all Docker images
 	@echo "$(GREEN)Building all Docker images...$(NC)"
-	@docker compose build
+	@$(UPSTREAM_MAKE) build
 
 docker-up: ## Start all services with Docker Compose
 	@echo "$(GREEN)Starting all services...$(NC)"
-	@docker compose up -d
+	@$(UPSTREAM_MAKE) start
 
 docker-down: ## Stop all services
 	@echo "$(YELLOW)Stopping all services...$(NC)"
-	@docker compose down
+	@$(UPSTREAM_MAKE) stop
 
 docker-logs: ## Show logs from all services
-	@docker compose logs -f
+	@touch .env.override
+	@docker compose --env-file .env --env-file .env.override -f compose.yaml -f compose.full.yaml -f compose.observability.yaml -f compose.extras.yaml logs -f
 
 ##@ Helm
 helm-lint: ## Lint Helm chart
