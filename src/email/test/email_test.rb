@@ -1,6 +1,10 @@
 # Copyright The OpenTelemetry Authors
 # SPDX-License-Identifier: Apache-2.0
 
+# Sinatra only enforces host authorization outside the test environment;
+# rack-test sends requests as example.org, which would otherwise get a 403.
+ENV['RACK_ENV'] ||= 'test'
+
 require 'minitest/autorun'
 require 'rack/test'
 require_relative '../email_server'
