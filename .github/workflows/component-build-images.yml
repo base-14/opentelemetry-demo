@@ -45,9 +45,9 @@ jobs:
         with:
           persist-credentials: false
       - name: Generate
-        run: make clean docker-generate-protobuf
+        run: make -f Makefile.original clean docker-generate-protobuf
       - name: Check clean work tree
-        run: make check-clean-work-tree
+        run: make -f Makefile.original check-clean-work-tree
 
   build_and_push_images:
     name: Build and push ${{ matrix.file_tag.tag_suffix }} image
