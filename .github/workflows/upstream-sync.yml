@@ -1,0 +1,105 @@
+# Copyright The OpenTelemetry Authors
+# SPDX-License-Identifier: Apache-2.0
+
+name: Upstream sync
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # weekly at 06:00 UTC on Monday
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: upstream-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync latest upstream release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      # A PAT is required: GITHUB_TOKEN cannot push workflow-file changes, and
+      # PRs it opens do not trigger CI. Needs Contents, Pull requests, Issues
+      # and Workflows read/write on this repository.
+      GH_TOKEN: ${{ secrets.UPSTREAM_SYNC_TOKEN }}
+    steps:
+      - name: Check token
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::Repository secret UPSTREAM_SYNC_TOKEN is not set"
+            exit 1
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.UPSTREAM_SYNC_TOKEN }}
+          persist-credentials: true  # needed to push the sync branch
+
+      - name: Merge latest upstream release
+        id: sync
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          .github/scripts/upstream-sync.sh
+
+      - name: Open pull request
+        if: steps.sync.outputs.status == 'merged'
+        env:
+          TAG: ${{ steps.sync.outputs.tag }}
+          BRANCH: ${{ steps.sync.outputs.branch }}
+          WARNINGS: ${{ steps.sync.outputs.warnings }}
+        run: |
+          git push origin "$BRANCH"
+          {
+            echo "Merges upstream OpenTelemetry Demo release [$TAG](https://github.com/open-telemetry/opentelemetry-demo/releases/tag/$TAG) into \`main\`."
+            echo
+            echo "The merge applied without conflicts. Review CI before merging."
+            if [ -n "$WARNINGS" ]; then
+              echo
+              echo "### Fork settings to restore"
+              echo
+              echo "Upstream reintroduced settings this fork removes (fork guards / \`uses: \$/\` path):"
+              echo
+              echo '```'
+              echo "$WARNINGS"
+              echo '```'
+            fi
+          } > "$RUNNER_TEMP/pr-body.md"
+          gh pr create --base main --head "$BRANCH" \
+            --title "Sync upstream OpenTelemetry Demo $TAG" \
+            --body-file "$RUNNER_TEMP/pr-body.md"
+
+      - name: Open issue for conflicts
+        if: steps.sync.outputs.status == 'conflict'
+        env:
+          TAG: ${{ steps.sync.outputs.tag }}
+          CONFLICTS: ${{ steps.sync.outputs.conflicts }}
+        run: |
+          title="Upstream sync to $TAG needs manual merge"
+          existing=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq 'length')
+          if [ "$existing" != "0" ]; then
+            echo "Issue already open: $title"
+            exit 0
+          fi
+          {
+            echo "Merging upstream OpenTelemetry Demo [$TAG](https://github.com/open-telemetry/opentelemetry-demo/releases/tag/$TAG) into \`main\` conflicts in:"
+            echo
+            echo '```'
+            echo "$CONFLICTS"
+            echo '```'
+            echo
+            echo "Resolve locally:"
+            echo
+            echo '```sh'
+            echo "git fetch upstream --tags"
+            echo "git switch -c sync/upstream-$TAG main"
+            echo "git merge $TAG"
+            echo '```'
+          } > "$RUNNER_TEMP/issue-body.md"
+          gh issue create --title "$title" --body-file "$RUNNER_TEMP/issue-body.md"
