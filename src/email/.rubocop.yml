@@ -3,6 +3,9 @@ AllCops:
   Exclude:
     - 'vendor/**/*'
     - 'tmp/**/*'
+    # Upstream-owned files; restyling them would conflict on every upstream sync.
+    - 'email_server.rb'
+    - 'Gemfile'
 
 Style/Documentation:
   Enabled: false
