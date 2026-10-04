@@ -26,10 +26,10 @@ jobs:
       packages: write  # required to push built images to GHCR
     uses: ./.github/workflows/component-build-images.yml
     with:
-      push: ${{ github.event_name == 'push' }}
+      # base14 fork: build to verify only; images are not published from CI.
+      push: false
       force_build: ${{ github.event_name == 'push' }}
-      # Use a non-release tag for PR builds; tags are not pushed when push=false.
-      version: ${{ github.event_name == 'push' && 'main' || 'dev' }}
+      version: 'dev'
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
