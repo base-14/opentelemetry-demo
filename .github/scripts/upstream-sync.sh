@@ -73,12 +73,16 @@ if ! git merge --no-ff --no-edit -m "Merge upstream OpenTelemetry Demo $tag" "$t
   exit 0
 fi
 
-# The fork publishes images itself, so upstream's "skip on forks" guards and
-# its `uses: $/...` reusable-workflow path must stay out of these workflows.
-warnings=$(grep -nE 'github\.event\.repository\.fork|uses: \$/' \
-  .github/workflows/build-images.yml \
-  .github/workflows/release.yml \
-  .github/workflows/component-build-images.yml 2>/dev/null || true)
+# The fork publishes images itself, so upstream's "skip on forks" guards must
+# stay out of the image workflows. Upstream's `uses: $/...` reusable-workflow
+# path is invalid anywhere.
+warnings=$( {
+  grep -nH 'github\.event\.repository\.fork' \
+    .github/workflows/build-images.yml \
+    .github/workflows/release.yml \
+    .github/workflows/component-build-images.yml 2>/dev/null
+  grep -nH 'uses: \$/' .github/workflows/*.yml 2>/dev/null
+} || true)
 
 echo "Merged upstream $tag into $branch"
 set_output status merged

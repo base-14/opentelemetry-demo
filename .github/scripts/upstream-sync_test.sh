@@ -134,11 +134,26 @@ test_fork_guard_is_flagged() {
   rm -rf "$s"
 }
 
+test_invalid_uses_path_is_flagged_in_any_workflow() {
+  echo "test_invalid_uses_path_is_flagged_in_any_workflow"
+  local s
+  s=$(setup)
+  commit_file "$s/upstream" .github/workflows/checks.yml \
+    "    uses: \$/.github/workflows/codeql-analysis.yml" "upstream adds bad uses path"
+  git_q -C "$s/upstream" tag 1.1.0
+  run_sync "$s"
+  assert_eq "status" "$(output "$s" status)" "merged"
+  assert_eq "warning mentions file" \
+    "$(grep -c 'checks.yml' "$s/output" | tr -d ' ')" "1"
+  rm -rf "$s"
+}
+
 test_new_release_merges_cleanly
 test_up_to_date_is_noop
 test_pending_sync_branch_is_noop
 test_conflict_is_reported_and_aborted
 test_fork_guard_is_flagged
+test_invalid_uses_path_is_flagged_in_any_workflow
 
 if ((failures > 0)); then
   echo "$failures assertion(s) failed"
