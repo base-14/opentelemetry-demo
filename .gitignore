@@ -57,7 +57,7 @@ src/frontend/cypress/videos
 src/frontend/cypress/screenshots
 src/shipping/target/
 
-src/currency/build/generated/
+!src/currency/build
 src/cart/src/Program.cs.bak
 src/flagd/demo.flagd.json.bak
 
