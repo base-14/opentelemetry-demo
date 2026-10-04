@@ -39,7 +39,7 @@ install-dotnet: ## Install .NET dependencies
 	@for service in $(DOTNET_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Installing dependencies for $$service"; \
-			cd $$service && dotnet restore && cd - > /dev/null; \
+			(cd $$service && dotnet restore) || exit 1; \
 		fi \
 	done
 
@@ -48,7 +48,7 @@ install-java: ## Install Java dependencies
 	@for service in $(JAVA_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Installing dependencies for $$service"; \
-			cd $$service && ./gradlew build --refresh-dependencies && cd - > /dev/null; \
+			(cd $$service && ./gradlew build --refresh-dependencies) || exit 1; \
 		fi \
 	done
 
@@ -57,7 +57,7 @@ install-go: ## Install Go dependencies
 	@for service in $(GO_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Installing dependencies for $$service"; \
-			cd $$service && go mod download && cd - > /dev/null; \
+			(cd $$service && go mod download) || exit 1; \
 		fi \
 	done
 
@@ -66,7 +66,7 @@ install-nodejs: ## Install Node.js dependencies
 	@for service in $(NODEJS_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Installing dependencies for $$service"; \
-			cd $$service && npm ci && cd - > /dev/null; \
+			(cd $$service && npm ci) || exit 1; \
 		fi \
 	done
 
@@ -75,7 +75,7 @@ install-python: ## Install Python dependencies
 	@for service in $(PYTHON_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Installing dependencies for $$service"; \
-			cd $$service && pip install -r requirements.txt && pip install flake8 black pytest pytest-cov && cd - > /dev/null; \
+			(cd $$service && pip install -r requirements.txt && pip install flake8 black pytest pytest-cov) || exit 1; \
 		fi \
 	done
 
@@ -84,7 +84,7 @@ install-php: ## Install PHP dependencies
 	@for service in $(PHP_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Installing dependencies for $$service"; \
-			cd $$service && composer install --prefer-dist --no-progress && cd - > /dev/null; \
+			(cd $$service && composer install --prefer-dist --no-progress) || exit 1; \
 		fi \
 	done
 
@@ -93,7 +93,7 @@ install-ruby: ## Install Ruby dependencies
 	@for service in $(RUBY_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Installing dependencies for $$service"; \
-			cd $$service && bundle install && cd - > /dev/null; \
+			(cd $$service && bundle install) || exit 1; \
 		fi \
 	done
 
@@ -102,7 +102,7 @@ install-rust: ## Install Rust dependencies
 	@for service in $(RUST_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Installing dependencies for $$service"; \
-			cd $$service && cargo build && cd - > /dev/null; \
+			(cd $$service && cargo build) || exit 1; \
 		fi \
 	done
 
@@ -111,7 +111,7 @@ install-cpp: ## Install C++ dependencies
 	@for service in $(CPP_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Setting up build for $$service"; \
-			cd $$service && mkdir -p build && cd build && cmake .. && cd - > /dev/null; \
+			(cd $$service && mkdir -p build && cd build && cmake ..) || exit 1; \
 		fi \
 	done
 
@@ -125,7 +125,7 @@ build-dotnet: ## Build .NET services
 	@for service in $(DOTNET_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Building $$service"; \
-			cd $$service && dotnet build --no-restore --configuration Release && cd - > /dev/null; \
+			(cd $$service && dotnet build --no-restore --configuration Release) || exit 1; \
 		fi \
 	done
 
@@ -134,7 +134,7 @@ build-java: ## Build Java services
 	@for service in $(JAVA_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Building $$service"; \
-			cd $$service && ./gradlew build && cd - > /dev/null; \
+			(cd $$service && ./gradlew build) || exit 1; \
 		fi \
 	done
 
@@ -143,7 +143,7 @@ build-go: ## Build Go services
 	@for service in $(GO_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Building $$service"; \
-			cd $$service && go build -v ./... && cd - > /dev/null; \
+			(cd $$service && go build -v ./...) || exit 1; \
 		fi \
 	done
 
@@ -152,12 +152,12 @@ build-nodejs: ## Build Node.js services
 	@for service in $(NODEJS_SERVICES); do \
 		if [ -d "$$service" ] && [ -f "$$service/package.json" ]; then \
 			echo "Building $$service"; \
-			cd $$service && \
+			(cd $$service && \
 			if grep -q '"build"' package.json; then \
 				npm run build; \
 			else \
 				echo "No build script found for $$service, skipping"; \
-			fi && cd - > /dev/null; \
+			fi) || exit 1; \
 		fi \
 	done
 
@@ -166,7 +166,7 @@ build-python: ## Build Python services (validate syntax)
 	@for service in $(PYTHON_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Validating $$service"; \
-			cd $$service && python -m py_compile *.py && cd - > /dev/null; \
+			(cd $$service && python -m py_compile *.py) || exit 1; \
 		fi \
 	done
 
@@ -175,7 +175,7 @@ build-php: ## Build PHP services (validate syntax)
 	@for service in $(PHP_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Validating $$service"; \
-			cd $$service && find . -name "*.php" -exec php -l {} \; && cd - > /dev/null; \
+			(cd $$service && find . -name "*.php" -exec php -l {} \;) || exit 1; \
 		fi \
 	done
 
@@ -184,7 +184,7 @@ build-ruby: ## Build Ruby services (validate syntax)
 	@for service in $(RUBY_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Validating $$service"; \
-			cd $$service && find . -name "*.rb" -exec ruby -c {} \; && cd - > /dev/null; \
+			(cd $$service && find . -name "*.rb" -exec ruby -c {} \;) || exit 1; \
 		fi \
 	done
 
@@ -193,7 +193,7 @@ build-rust: ## Build Rust services
 	@for service in $(RUST_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Building $$service"; \
-			cd $$service && cargo build --verbose && cd - > /dev/null; \
+			(cd $$service && cargo build --verbose) || exit 1; \
 		fi \
 	done
 
@@ -202,7 +202,7 @@ build-cpp: ## Build C++ services
 	@for service in $(CPP_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Building $$service"; \
-			cd $$service/build && make && cd - > /dev/null; \
+			(cd $$service/build && make) || exit 1; \
 		fi \
 	done
 
@@ -216,7 +216,7 @@ lint-dotnet: ## Lint .NET services
 	@for service in $(DOTNET_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Linting $$service"; \
-			cd $$service && dotnet format --verify-no-changes --verbosity minimal && cd - > /dev/null || exit 1; \
+			(cd $$service && dotnet format --verify-no-changes --verbosity minimal) || exit 1; \
 		fi \
 	done
 
@@ -225,7 +225,7 @@ lint-java: ## Lint Java services
 	@for service in $(JAVA_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Linting $$service"; \
-			cd $$service && ./gradlew spotlessCheck && cd - > /dev/null || exit 1; \
+			(cd $$service && ./gradlew spotlessCheck) || exit 1; \
 		fi \
 	done
 
@@ -234,7 +234,7 @@ lint-go: ## Lint Go services
 	@for service in $(GO_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Linting $$service"; \
-			cd $$service && golangci-lint run && cd - > /dev/null || exit 1; \
+			(cd $$service && golangci-lint run) || exit 1; \
 		fi \
 	done
 
@@ -243,7 +243,7 @@ lint-nodejs: ## Lint Node.js services
 	@for service in $(NODEJS_SERVICES); do \
 		if [ -d "$$service" ] && [ -f "$$service/package.json" ]; then \
 			echo "Linting $$service"; \
-			cd $$service && \
+			(cd $$service && \
 			if grep -q '"lint"' package.json; then \
 				npm run lint; \
 			else \
@@ -251,7 +251,7 @@ lint-nodejs: ## Lint Node.js services
 			fi && \
 			if [ -f "tsconfig.json" ]; then \
 				npx tsc --noEmit; \
-			fi && cd - > /dev/null || exit 1; \
+			fi) || exit 1; \
 		fi \
 	done
 
@@ -260,10 +260,10 @@ lint-python: ## Lint Python services
 	@for service in $(PYTHON_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Linting $$service"; \
-			cd $$service && \
+			(cd $$service && \
 			flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics && \
 			flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics && \
-			black --check . && cd - > /dev/null || exit 1; \
+			black --check .) || exit 1; \
 		fi \
 	done
 
@@ -272,11 +272,11 @@ lint-php: ## Lint PHP services
 	@for service in $(PHP_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Linting $$service"; \
-			cd $$service && \
+			(cd $$service && \
 			composer require --dev friendsofphp/php-cs-fixer --no-interaction && \
 			vendor/bin/php-cs-fixer fix --dry-run --diff && \
 			composer require --dev phpstan/phpstan --no-interaction && \
-			vendor/bin/phpstan analyse src --level=1 && cd - > /dev/null || exit 1; \
+			vendor/bin/phpstan analyse src --level=1) || exit 1; \
 		fi \
 	done
 
@@ -285,7 +285,7 @@ lint-ruby: ## Lint Ruby services
 	@for service in $(RUBY_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Linting $$service"; \
-			cd $$service && rubocop --format progress --display-cop-names && cd - > /dev/null || exit 1; \
+			(cd $$service && rubocop --format progress --display-cop-names) || exit 1; \
 		fi \
 	done
 
@@ -294,9 +294,9 @@ lint-rust: ## Lint Rust services
 	@for service in $(RUST_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Linting $$service"; \
-			cd $$service && \
+			(cd $$service && \
 			cargo clippy -- -D warnings && \
-			cargo fmt --all -- --check && cd - > /dev/null || exit 1; \
+			cargo fmt --all -- --check) || exit 1; \
 		fi \
 	done
 
@@ -305,7 +305,7 @@ lint-cpp: ## Lint C++ services
 	@for service in $(CPP_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Linting $$service"; \
-			cd $$service && find src -name '*.cpp' -o -name '*.h' | xargs clang-format --dry-run -Werror && cd - > /dev/null || exit 1; \
+			(cd $$service && find src -name '*.cpp' -o -name '*.h' | xargs clang-format --dry-run -Werror) || exit 1; \
 		fi \
 	done
 
@@ -319,12 +319,12 @@ test-dotnet: ## Test .NET services
 	@for service in $(DOTNET_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Testing $$service"; \
-			cd $$service && \
+			(cd $$service && \
 			if [ -d "tests" ] || find . -name "*.tests.csproj" | grep -q .; then \
 				dotnet test --no-build --configuration Release --logger trx; \
 			else \
 				echo "No tests found for $$service, skipping"; \
-			fi && cd - > /dev/null; \
+			fi) || exit 1; \
 		fi \
 	done
 
@@ -333,7 +333,7 @@ test-java: ## Test Java services
 	@for service in $(JAVA_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Testing $$service"; \
-			cd $$service && ./gradlew test && cd - > /dev/null; \
+			(cd $$service && ./gradlew test) || exit 1; \
 		fi \
 	done
 
@@ -342,7 +342,7 @@ test-go: ## Test Go services
 	@for service in $(GO_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Testing $$service"; \
-			cd $$service && go test -v -race -coverprofile=coverage.out ./... && cd - > /dev/null; \
+			(cd $$service && go test -v -race -coverprofile=coverage.out ./...) || exit 1; \
 		fi \
 	done
 
@@ -351,12 +351,12 @@ test-nodejs: ## Test Node.js services
 	@for service in $(NODEJS_SERVICES); do \
 		if [ -d "$$service" ] && [ -f "$$service/package.json" ]; then \
 			echo "Testing $$service"; \
-			cd $$service && \
+			(cd $$service && \
 			if grep -q '"test"' package.json; then \
 				npm test; \
 			else \
 				echo "No test script found for $$service, skipping"; \
-			fi && cd - > /dev/null; \
+			fi) || exit 1; \
 		fi \
 	done
 
@@ -365,12 +365,12 @@ test-python: ## Test Python services
 	@for service in $(PYTHON_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Testing $$service"; \
-			cd $$service && \
+			(cd $$service && \
 			if [ -d "tests" ] || find . -name "*test*.py" -not -path "./venv/*" | grep -q .; then \
 				python -m pytest --cov=. --cov-report=xml; \
 			else \
 				echo "No tests found for $$service, skipping"; \
-			fi && cd - > /dev/null; \
+			fi) || exit 1; \
 		fi \
 	done
 
@@ -379,13 +379,13 @@ test-php: ## Test PHP services
 	@for service in $(PHP_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Testing $$service"; \
-			cd $$service && \
+			(cd $$service && \
 			if [ -d "tests" ]; then \
 				composer require --dev phpunit/phpunit --no-interaction && \
 				vendor/bin/phpunit; \
 			else \
 				echo "No tests found for $$service, skipping"; \
-			fi && cd - > /dev/null; \
+			fi) || exit 1; \
 		fi \
 	done
 
@@ -394,12 +394,14 @@ test-ruby: ## Test Ruby services
 	@for service in $(RUBY_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Testing $$service"; \
-			cd $$service && \
-			if [ -d "test" ] || [ -d "spec" ]; then \
-				bundle exec rake test || bundle exec rspec; \
+			(cd $$service && \
+			if [ -d "test" ]; then \
+				for t in test/*_test.rb; do bundle exec ruby -Itest "$$t" || exit 1; done; \
+			elif [ -d "spec" ]; then \
+				bundle exec rspec; \
 			else \
 				echo "No tests found for $$service, skipping"; \
-			fi && cd - > /dev/null; \
+			fi) || exit 1; \
 		fi \
 	done
 
@@ -408,7 +410,7 @@ test-rust: ## Test Rust services
 	@for service in $(RUST_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Testing $$service"; \
-			cd $$service && cargo test --verbose && cd - > /dev/null; \
+			(cd $$service && cargo test --verbose) || exit 1; \
 		fi \
 	done
 
@@ -417,12 +419,12 @@ test-cpp: ## Test C++ services
 	@for service in $(CPP_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Testing $$service"; \
-			cd $$service/build && \
+			(cd $$service/build && \
 			if [ -f "test_currency" ]; then \
 				./test_currency; \
 			else \
 				echo "No tests found for $$service, skipping"; \
-			fi && cd - > /dev/null; \
+			fi) || exit 1; \
 		fi \
 	done
 
@@ -636,27 +638,27 @@ clean: ## Clean all build artifacts and generated protobuf files
 	rm -rf ./src/currency/build/generated/proto/
 	@for service in $(DOTNET_SERVICES); do \
 		if [ -d "$$service" ]; then \
-			cd $$service && dotnet clean && cd - > /dev/null; \
+			(cd $$service && dotnet clean) || exit 1; \
 		fi \
 	done
 	@for service in $(JAVA_SERVICES); do \
 		if [ -d "$$service" ]; then \
-			cd $$service && ./gradlew clean && cd - > /dev/null; \
+			(cd $$service && ./gradlew clean) || exit 1; \
 		fi \
 	done
 	@for service in $(GO_SERVICES); do \
 		if [ -d "$$service" ]; then \
-			cd $$service && go clean && cd - > /dev/null; \
+			(cd $$service && go clean) || exit 1; \
 		fi \
 	done
 	@for service in $(NODEJS_SERVICES); do \
 		if [ -d "$$service" ]; then \
-			cd $$service && rm -rf .next dist build && cd - > /dev/null; \
+			(cd $$service && rm -rf .next dist build) || exit 1; \
 		fi \
 	done
 	@for service in $(RUST_SERVICES); do \
 		if [ -d "$$service" ]; then \
-			cd $$service && cargo clean && cd - > /dev/null; \
+			(cd $$service && cargo clean) || exit 1; \
 		fi \
 	done
 	@for service in $(CPP_SERVICES); do \
@@ -670,31 +672,31 @@ format: ## Format code for all services
 	@for service in $(DOTNET_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Formatting $$service"; \
-			cd $$service && dotnet format && cd - > /dev/null; \
+			(cd $$service && dotnet format) || exit 1; \
 		fi \
 	done
 	@for service in $(JAVA_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Formatting $$service"; \
-			cd $$service && ./gradlew spotlessApply && cd - > /dev/null; \
+			(cd $$service && ./gradlew spotlessApply) || exit 1; \
 		fi \
 	done
 	@for service in $(GO_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Formatting $$service"; \
-			cd $$service && go fmt ./... && cd - > /dev/null; \
+			(cd $$service && go fmt ./...) || exit 1; \
 		fi \
 	done
 	@for service in $(PYTHON_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Formatting $$service"; \
-			cd $$service && black . && cd - > /dev/null; \
+			(cd $$service && black .) || exit 1; \
 		fi \
 	done
 	@for service in $(RUST_SERVICES); do \
 		if [ -d "$$service" ]; then \
 			echo "Formatting $$service"; \
-			cd $$service && cargo fmt && cd - > /dev/null; \
+			(cd $$service && cargo fmt) || exit 1; \
 		fi \
 	done
 

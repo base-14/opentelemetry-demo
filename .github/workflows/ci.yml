@@ -422,8 +422,10 @@ jobs:
       - name: Run tests
         working-directory: src/email
         run: |
-          if [ -d "test" ] || [ -d "spec" ]; then
-            bundle exec rspec || bundle exec rake test
+          if [ -d "test" ]; then
+            for t in test/*_test.rb; do bundle exec ruby -Itest "$t" || exit 1; done
+          elif [ -d "spec" ]; then
+            bundle exec rspec
           else
             echo "No tests found, skipping"
           fi

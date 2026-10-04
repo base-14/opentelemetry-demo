@@ -60,3 +60,8 @@ src/shipping/target/
 src/currency/build/generated/
 src/cart/src/Program.cs.bak
 src/flagd/demo.flagd.json.bak
+
+# Test coverage output
+coverage.out
+coverage.xml
+.coverage
