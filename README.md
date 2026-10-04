@@ -10,7 +10,7 @@
 > - **Scout Integration** - Alternative to built-in telemetry stack (Jaeger, Prometheus, Grafana)
 > - **Enhanced Documentation** with deployment guides and troubleshooting
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?color=red)](https://github.com/base-14/otel-demo/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?color=red)](https://github.com/base-14/opentelemetry-demo/blob/main/LICENSE)
 [![Original Repo](https://img.shields.io/badge/Original-OpenTelemetry%20Demo-blue)](https://github.com/open-telemetry/opentelemetry-demo)
 
 ## Welcome to the OpenTelemetry Astronomy Shop Demo
