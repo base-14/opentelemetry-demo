@@ -471,11 +471,11 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake build-essential libprotobuf-dev protobuf-compiler libgrpc++-dev libgrpc-dev pkg-config git
+          sudo apt-get install -y cmake build-essential libprotobuf-dev protobuf-compiler libgrpc++-dev libgrpc-dev protobuf-compiler-grpc pkg-config git
 
       - name: Build OpenTelemetry C++
         run: |
-          git clone --depth 1 --branch v1.21.0 https://github.com/open-telemetry/opentelemetry-cpp
+          git clone --depth 1 --branch v1.28.0 https://github.com/open-telemetry/opentelemetry-cpp
           cd opentelemetry-cpp/
           mkdir build && cd build
           cmake .. -DCMAKE_CXX_STANDARD=17 -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
