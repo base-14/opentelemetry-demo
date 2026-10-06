@@ -67,7 +67,7 @@ The following table lists the configurable parameters and their default values.
 | Parameter | Description | Default |
 |-----------|-------------|---------|
 | `demo.version` | Version of the demo application | `2.0.2` |
-| `demo.image.repository` | Demo image repository | `ghcr.io/open-telemetry/demo` |
+| `demo.image.repository` | Demo image repository | `ghcr.io/base-14/opentelemetry-demo` |
 | `demo.image.tag` | Demo image tag | `latest` |
 | `demo.image.pullPolicy` | Image pull policy | `IfNotPresent` |
 
@@ -79,7 +79,7 @@ Each service (accounting, ad, cart, checkout, etc.) has the following configurab
 |-----------|-------------|---------|
 | `<service>.enabled` | Enable/disable the service | `true` |
 | `<service>.name` | Service name | `<service-name>` |
-| `<service>.image.repository` | Service image repository | `ghcr.io/open-telemetry/demo` |
+| `<service>.image.repository` | Service image repository | `ghcr.io/base-14/opentelemetry-demo` |
 | `<service>.image.tag` | Service image tag | `latest-<service>` |
 | `<service>.port` | Service port | `<varies>` |
 | `<service>.resources` | CPU/Memory resource requests/limits | `<varies>` |

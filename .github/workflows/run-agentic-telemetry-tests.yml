@@ -138,7 +138,7 @@ jobs:
 
       - name: Save demo images to an artifact tarball
         run: |
-          IMAGES=$(docker images 'ghcr.io/open-telemetry/demo:latest-*' --format '{{.Repository}}:{{.Tag}}')
+          IMAGES=$(docker images 'ghcr.io/base-14/opentelemetry-demo:latest-*' --format '{{.Repository}}:{{.Tag}}')
           echo "Saving images:"; echo "$IMAGES"
           docker save $IMAGES | zstd -3 -T0 -o demo-images.tar.zst
           ls -lh demo-images.tar.zst

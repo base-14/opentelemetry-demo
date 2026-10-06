@@ -8,7 +8,7 @@ global:
 demo:
   version: 2.0.2
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest
     pullPolicy: IfNotPresent
 
@@ -46,7 +46,7 @@ accounting:
   enabled: true
   name: accounting
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-accounting
   resources:
     limits:
@@ -68,7 +68,7 @@ ad:
   enabled: true
   name: ad
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-ad
   port: 9555
   resources:
@@ -93,7 +93,7 @@ cart:
   enabled: true
   name: cart
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-cart
   port: 7070
   resources:
@@ -118,7 +118,7 @@ checkout:
   enabled: true
   name: checkout
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-checkout
   port: 5050
   resources:
@@ -153,7 +153,7 @@ currency:
   enabled: true
   name: currency
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-currency
   port: 7001
   resources:
@@ -174,7 +174,7 @@ email:
   enabled: true
   name: email
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-email
   port: 6060
   resources:
@@ -197,7 +197,7 @@ fraudDetection:
   enabled: true
   name: fraud-detection
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-fraud-detection
   resources:
     limits:
@@ -221,7 +221,7 @@ frontend:
   enabled: true
   name: frontend
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-frontend
   port: 8080
   resources:
@@ -264,7 +264,7 @@ frontendProxy:
   enabled: true
   name: frontend-proxy
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-frontend-proxy
   port: 8080
   nodePort: 30080
@@ -280,7 +280,7 @@ imageProvider:
   enabled: true
   name: image-provider
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-image-provider
   port: 8081
   resources:
@@ -294,7 +294,7 @@ loadGenerator:
   enabled: true
   name: load-generator
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-load-generator
   port: 8089
   resources:
@@ -321,7 +321,7 @@ payment:
   enabled: true
   name: payment
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-payment
   port: 50051
   resources:
@@ -335,7 +335,7 @@ productCatalog:
   enabled: true
   name: product-catalog
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-product-catalog
   port: 3550
   resources:
@@ -354,7 +354,7 @@ quote:
   enabled: true
   name: quote
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-quote
   port: 8090
   resources:
@@ -368,7 +368,7 @@ recommendation:
   enabled: true
   name: recommendation
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-recommendation
   port: 9001
   resources:
@@ -391,7 +391,7 @@ shipping:
   enabled: true
   name: shipping
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-shipping
   port: 50050
   resources:
@@ -440,7 +440,7 @@ flagdUI:
   enabled: true
   name: flagd-ui
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-flagd-ui
   port: 4000
   resources:
@@ -454,7 +454,7 @@ kafka:
   enabled: true
   name: kafka
   image:
-    repository: ghcr.io/open-telemetry/demo
+    repository: ghcr.io/base-14/opentelemetry-demo
     tag: latest-kafka
   port: 9092
   resources:

@@ -30,9 +30,6 @@ jobs:
       push: false
       force_build: ${{ github.event_name == 'push' }}
       version: 'dev'
-    secrets:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
   markdownlint:
     name: Markdown lint

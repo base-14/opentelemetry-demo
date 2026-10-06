@@ -21,16 +21,11 @@ on:
         default: 'dev'
         required: false
         type: string
-      dockerhub_repo:
-        description: Docker Hub repository
-        default: 'base14/oteldemo'
+      ghcr_repo:
+        description: GHCR repository
+        default: 'ghcr.io/base-14/opentelemetry-demo'
         required: false
         type: string
-    secrets:
-      DOCKER_USERNAME:
-        required: false
-      DOCKER_PASSWORD:
-        required: false
 
 permissions:
   contents: read
@@ -258,11 +253,12 @@ jobs:
             echo "Changes detected in ${DOCKERFILE_DIR}, proceeding with build for ${DOCKERFILE}."
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
-      - name: Log in to Docker Hub
+      - name: Log in to GHCR
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f  # v4.6.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
         if: ${{ steps.check_changes.outputs.skip == 'false' && inputs.push }}
       - name: Set up QEMU
         if: ${{ steps.check_changes.outputs.skip == 'false' && matrix.file_tag.setup-qemu }}
@@ -289,7 +285,7 @@ jobs:
             OPENTELEMETRY_CPP_VERSION=${{ env.OPENTELEMETRY_CPP_VERSION }}
             OPAMP_GO_REF=${{ env.OPAMP_GO_REF }}
           tags: |
-            ${{ inputs.dockerhub_repo }}:${{ inputs.version }}-${{ matrix.file_tag.tag_suffix }}
-            ${{ inputs.dockerhub_repo }}:latest-${{ matrix.file_tag.tag_suffix }}
+            ${{ inputs.ghcr_repo }}:${{ inputs.version }}-${{ matrix.file_tag.tag_suffix }}
+            ${{ inputs.ghcr_repo }}:latest-${{ matrix.file_tag.tag_suffix }}
           cache-from: type=gha,scope=${{ matrix.file_tag.tag_suffix }}
           cache-to: type=gha,scope=${{ matrix.file_tag.tag_suffix }}
